@@ -35,7 +35,7 @@ func SignUp(ctx *fasthttp.RequestCtx) {
 		ctx.Response.Header.SetCookie(cook)
 		ctx.SetStatusCode(fasthttp.StatusConflict)
 		ctx.SetBody(mJSON)
-	default:
+	case fasthttp.StatusInternalServerError:
 		ctx.Response.Header.SetCookie(cook)
 		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
 		ctx.SetBody(mJSON)
@@ -71,7 +71,7 @@ func SignIn(ctx *fasthttp.RequestCtx) {
 		ctx.Response.Header.SetCookie(cook)
 		ctx.SetStatusCode(fasthttp.StatusConflict)
 		ctx.SetBody(mJSON)
-	default:
+	case fasthttp.StatusInternalServerError:
 		ctx.Response.Header.SetCookie(cook)
 		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
 		ctx.SetBody(mJSON)
@@ -96,7 +96,7 @@ func SignOut(ctx *fasthttp.RequestCtx) {
 		ctx.Response.Header.SetCookie(cook)
 		ctx.SetStatusCode(fasthttp.StatusOK)
 		ctx.SetBody(mJSON)
-	default:
+	case fasthttp.StatusInternalServerError:
 		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
 		ctx.SetBody(mJSON)
 	}
