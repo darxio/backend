@@ -1,7 +1,7 @@
-version: '3'
+version: '0'
 services:
   backend:
     build: .
     ports:
     - "8888:8888"
-    - "6379:6379"
+    - "5432:5432"
