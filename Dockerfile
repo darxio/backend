@@ -39,6 +39,7 @@ RUN echo "shared_buffers = 512MB" >> /etc/postgresql/$PGSQLVER/main/postgresql.c
 
 EXPOSE 5432
 
+
 USER root
 
 CMD service postgresql start && go run $GOPATH/backend/cmd/main.go
