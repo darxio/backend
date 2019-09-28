@@ -10,6 +10,10 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
+func HealthCheck(ctx *fasthttp.RequestCtx) {
+	ctx.SetStatusCode(fasthttp.StatusOK)
+}
+
 func SignUp(ctx *fasthttp.RequestCtx) {
 	u := &models.User{}
 	u.UnmarshalJSON(ctx.PostBody())

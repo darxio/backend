@@ -13,6 +13,7 @@ import (
 func main() {
 	r := fasthttprouter.New()
 
+	r.GET("/", userapi.HealthCheck)
 	r.POST("/users", userapi.SignUp)
 	r.POST("/session", userapi.SignIn)
 	r.DELETE("/session", mw.Auth(userapi.SignOut))
