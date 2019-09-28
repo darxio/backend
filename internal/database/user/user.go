@@ -44,7 +44,7 @@ func SignIn(username string, password string) (code int, cookie string, message 
 
 	// kostyl
 	id := -1
-	database.QueryRow("SELECT id FROM users WHERE username = $1 AND password = $2 RETURNING id;", username, password).Scan(&id)
+	database.QueryRow("SELECT id FROM users WHERE username = $1 AND password = $2;", username, password).Scan(&id)
 
 	if id == -1 {
 		return 404, "", "User not found."
