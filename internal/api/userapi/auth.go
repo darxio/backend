@@ -10,10 +10,12 @@ import (
 )
 
 func HealthCheck(ctx *fasthttp.RequestCtx) {
+	log.Println(string(ctx.Method()) + (" ") + string(ctx.Path()))
 	ctx.SetStatusCode(fasthttp.StatusOK)
 }
 
 func SignUp(ctx *fasthttp.RequestCtx) {
+	log.Println(string(ctx.Method()) + " " + string(ctx.Path()) + " " + string(ctx.PostBody()))
 	u := &models.User{}
 	u.UnmarshalJSON(ctx.PostBody())
 
@@ -52,6 +54,7 @@ func SignUp(ctx *fasthttp.RequestCtx) {
 }
 
 func SignIn(ctx *fasthttp.RequestCtx) {
+	log.Println(string(ctx.Method()) + " " + string(ctx.Path()) + " " + string(ctx.PostBody()))
 	u := &models.User{}
 	u.UnmarshalJSON(ctx.PostBody())
 

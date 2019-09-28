@@ -20,3 +20,9 @@ Method   | Path     | Body                                          | Response  
 POST | /users | {"username":\<string\>, "password":\<string\>} | 201 Created, 400 Bad Request, 409 Conflict | {"message":\<string\>} |
 POST | /session | {"username":\<string\>, "password":\<string\>} | 200 OK, 400 Bad Request, 404 Not Found | {"message":\<string\>} |
 DELETE | /session | | 200 OK, 401 Unauthorized | {"message":\<string\>} |
+\* | \* | \* | \* | \* |
+GET | /groups/:name | | 200 OK, 404 Not Found | {"group":\<string\>, "about": \<string\>}|
+\* | \* | \* | \* | \* |
+GET | /user/groups/:name | | 200 OK, 400 Bad Request, 401 Unauthorized | {"message":\<string\>} |
+POST | /user/groups/:name | | 200 OK, 400 Bad Request, 401 Unauthorized | {"message":\<string\>} |
+DELETE | /user/groups/:name | | 200 OK, 400 Bad Request, 401 Unauthorized | {"message":\<string\>} |
