@@ -43,10 +43,10 @@ func SignIn(username string, password string) (code int, cookie string, message 
 	}
 
 	// kostyl
-	id := -1
-	database.QueryRow("SELECT id FROM users WHERE username = $1 AND password = $2;", username, password).Scan(&id)
+	var id int
+	err := database.QueryRow("SELECT id FROM users WHERE username = $1 AND password = $2;", username, password).Scan(&id)
 
-	if id == -1 {
+	if err == pgx.ErrNoRows {
 		return 404, "", "User not found."
 	} else {
 		cookie = "temp_cookie"
