@@ -15,12 +15,12 @@ func HealthCheck(ctx *fasthttp.RequestCtx) {
 }
 
 func SignUp(ctx *fasthttp.RequestCtx) {
-	log.Println(string(ctx.Method()) + " " + string(ctx.Path()) + " " + string(ctx.PostBody()))
+	log.Println("Sign Up: " + string(ctx.Method()) + " " + string(ctx.Path()) + " " + string(ctx.PostBody()))
 	u := &models.User{}
 	u.UnmarshalJSON(ctx.PostBody())
 	code, cookie, message := user.SignUp(u.Username, u.Password)
 
-	log.Println(cookie)
+	log.Println("Sign Up cookie: " + cookie)
 	m := &models.Msg{}
 	m.Message = message
 	mJSON, _ := m.MarshalJSON()
@@ -53,7 +53,7 @@ func SignUp(ctx *fasthttp.RequestCtx) {
 }
 
 func SignIn(ctx *fasthttp.RequestCtx) {
-	log.Println(string(ctx.Method()) + " " + string(ctx.Path()) + " " + string(ctx.PostBody()))
+	log.Println("Sign In: " + string(ctx.Method()) + " " + string(ctx.Path()) + " " + string(ctx.PostBody()))
 	u := &models.User{}
 	u.UnmarshalJSON(ctx.PostBody())
 
@@ -66,7 +66,8 @@ func SignIn(ctx *fasthttp.RequestCtx) {
 	cook := &fasthttp.Cookie{}
 	cook.SetKey("session")
 	cook.SetValue(cookie)
-	log.Println(cookie)
+
+	log.Println("Sign In cookie: " + cookie)
 
 	switch code {
 	case fasthttp.StatusOK:
@@ -91,9 +92,11 @@ func SignIn(ctx *fasthttp.RequestCtx) {
 }
 
 func SignOut(ctx *fasthttp.RequestCtx) {
-	log.Println(string(ctx.Method()) + " " + string(ctx.Path()) + " " + string(ctx.PostBody()))
+	log.Println("Sign Out: " + string(ctx.Method()) + " " + string(ctx.Path()) + " " + string(ctx.PostBody()))
+
 	code, message := user.SignOut(string(ctx.Request.Header.Cookie("session")))
 
+	log.Println(code)
 	m := &models.Msg{}
 	m.Message = message
 	mJSON, _ := m.MarshalJSON()

@@ -4,6 +4,7 @@ import (
 	"backend/internal/database/connection"
 	"log"
 
+	"github.com/icrowley/fake"
 	"github.com/jackc/pgx"
 )
 
@@ -32,8 +33,8 @@ func SignUp(username string, password string) (code int, cookie string, message 
 		return 500, "", "Something went wrong.."
 	}
 
-	cookie = "temp_cookie"
-	database.QueryRow("INSERT INTO cookies(user_id, cookie) VALUES ($1, $2);", id, cookie)
+	cookie = fake.Sentence()
+	database.QueryRow("INSERT INTO sessions(user_id, cookie) VALUES ($1, $2);", id, cookie)
 	return 201, cookie, "User created successfully."
 }
 
@@ -49,8 +50,8 @@ func SignIn(username string, password string) (code int, cookie string, message 
 	if err == pgx.ErrNoRows {
 		return 404, "", "User not found."
 	} else {
-		cookie = "temp_cookie"
-		database.QueryRow("INSERT INTO cookies(user_id, cookie) VALUES ($1, $2);", id, cookie)
+		cookie = fake.Sentence()
+		database.QueryRow("INSERT INTO sessions(user_id, cookie) VALUES ($1, $2);", id, cookie)
 		return 200, cookie, "User signed in successfully."
 	}
 
@@ -58,7 +59,8 @@ func SignIn(username string, password string) (code int, cookie string, message 
 }
 
 func SignOut(cookie string) (code int, message string) {
-	err := database.QueryRow("DELETE FROM sessions WHERE cookie = $1;", cookie)
+	log.Println(cookie)
+	_, err := database.Exec("DELETE FROM sessions WHERE cookie = $1;", cookie)
 
 	if err != nil {
 		return 500, "Something went wrong.."
