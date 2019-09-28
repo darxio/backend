@@ -63,3 +63,20 @@ CREATE TABLE excluded_ingredients (
 
   CONSTRAINT exclingredients_pkey PRIMARY KEY (ingredient_id, user_id)
 );
+
+-------------------------------------------
+-- products
+-------------------------------------------
+
+CREATE TABLE products (
+  id       BIGSERIAL      PRIMARY KEY,
+  name     CITEXT         NOT NULL,
+  -- nutrition facts
+);
+
+CREATE TABLE product_ingredients (
+  product_id      BIGINT    REFERENCES products(id),
+  ingredient_id   BIGINT    REFERENCES ingredient(id),
+
+  CONSTRAINT productingredients_pkey PRIMARY KEY (product_id, ingredient_id)
+);

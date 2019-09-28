@@ -18,8 +18,6 @@ func SignUp(ctx *fasthttp.RequestCtx) {
 	log.Println(string(ctx.Method()) + " " + string(ctx.Path()) + " " + string(ctx.PostBody()))
 	u := &models.User{}
 	u.UnmarshalJSON(ctx.PostBody())
-
-	log.Println(u)
 	code, cookie, message := user.SignUp(u.Username, u.Password)
 
 	log.Println(cookie)

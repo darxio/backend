@@ -8,6 +8,10 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
+func All(ctx *fasthttp.RequestCtx) {
+
+}
+
 func About(ctx *fasthttp.RequestCtx) {
 	log.Println(string(ctx.Method()) + (" ") + string(ctx.Path()))
 	groupName := ctx.UserValue("name_or_id").(string)
