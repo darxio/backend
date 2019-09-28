@@ -22,6 +22,7 @@ func SignUp(ctx *fasthttp.RequestCtx) {
 	log.Println(u)
 	code, cookie, message := user.SignUp(u.Username, u.Password)
 
+	log.Println(cookie)
 	m := &models.Msg{}
 	m.Message = message
 	mJSON, _ := m.MarshalJSON()
@@ -67,6 +68,7 @@ func SignIn(ctx *fasthttp.RequestCtx) {
 	cook := &fasthttp.Cookie{}
 	cook.SetKey("session")
 	cook.SetValue(cookie)
+	log.Println(cookie)
 
 	switch code {
 	case fasthttp.StatusOK:
