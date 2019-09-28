@@ -41,6 +41,6 @@ func main() {
 	r.GET("/groups/:name_or_id", groupapi.About)
 
 	log.Println("Listening on http://localhost:8888...")
-	// log.SetOutput(logFile)
+	log.SetOutput(logFile)
 	log.Fatal(fasthttp.ListenAndServe(":8888", r.Handler))
 }

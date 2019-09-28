@@ -16,3 +16,6 @@ type Group struct {
 	Name  string `json:"name"`
 	About string `json:"about"`
 }
+
+// easyjson:json
+type GroupsArr []*Group
