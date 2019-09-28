@@ -2,7 +2,6 @@ package userapi
 
 import (
 	"backend/internal/database/user"
-
 	"backend/internal/models"
 
 	"log"
