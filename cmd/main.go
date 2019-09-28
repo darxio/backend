@@ -19,5 +19,5 @@ func main() {
 	r.DELETE("/session", mw.Auth(userapi.SignOut))
 
 	log.Println("Listening on http://localhost:8888...")
-	fasthttp.ListenAndServe(":8888", r.Handler)
+	log.Fatal(fasthttp.ListenAndServe(":8888", r.Handler))
 }
