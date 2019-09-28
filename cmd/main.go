@@ -37,7 +37,7 @@ func main() {
 	r.POST("/me/groups/:name_or_id", userapi.AddGroups)
 	r.DELETE("/me/groups/:name_or_id", userapi.DeleteGroups)
 
-	// r.GET("/groups", groupapi.All)
+	r.GET("/groups", groupapi.All)
 	r.GET("/groups/:name_or_id", groupapi.About)
 
 	log.Println("Listening on http://localhost:8888...")
