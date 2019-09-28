@@ -10,7 +10,7 @@ import (
 
 func About(ctx *fasthttp.RequestCtx) {
 	log.Println(string(ctx.Method()) + (" ") + string(ctx.Path()))
-	groupName := ctx.UserValue("name").(string)
+	groupName := ctx.UserValue("name_or_id").(string)
 
 	g := &models.Group{}
 	code := group.About(groupName, g)

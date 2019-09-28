@@ -91,6 +91,7 @@ func SignIn(ctx *fasthttp.RequestCtx) {
 }
 
 func SignOut(ctx *fasthttp.RequestCtx) {
+	log.Println(string(ctx.Method()) + " " + string(ctx.Path()) + " " + string(ctx.PostBody()))
 	code, message := user.SignOut(string(ctx.Request.Header.Cookie("session")))
 
 	m := &models.Msg{}

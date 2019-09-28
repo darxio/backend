@@ -91,3 +91,9 @@ build/*
 /build
 /build/
 /build/*
+logs
+logs/
+logs/*
+/logs
+/logs/
+/logs/*

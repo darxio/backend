@@ -3,4 +3,4 @@
 3) индексы в бд
 4) генерация кук
 5) fix kostyl +
-6) logs to file
+6) logs to file +
