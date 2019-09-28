@@ -5,6 +5,8 @@ import (
 
 	"backend/internal/models"
 
+	"log"
+
 	"github.com/valyala/fasthttp"
 )
 
@@ -12,6 +14,7 @@ func SignUp(ctx *fasthttp.RequestCtx) {
 	u := &models.User{}
 	u.UnmarshalJSON(ctx.PostBody())
 
+	log.Println(u)
 	code, cookie, message := user.SignUp(u.Username, u.Password)
 
 	m := &models.Msg{}
@@ -22,6 +25,7 @@ func SignUp(ctx *fasthttp.RequestCtx) {
 	cook.SetKey("session")
 	cook.SetValue(cookie)
 
+	log.Println(code)
 	switch code {
 	case fasthttp.StatusCreated:
 		ctx.Response.Header.SetCookie(cook)

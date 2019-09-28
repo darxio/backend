@@ -1,4 +1,3 @@
-SET SYNCHRONOUS_COMMIT = 'off';
 CREATE EXTENSION IF NOT EXISTS CITEXT;
 
 CREATE TABLE users (
@@ -9,7 +8,7 @@ CREATE TABLE users (
 
 CREATE TABLE sessions (
     user_id     INT REFERENCES users(id),
-    cookie      TEXT DEFAULT ''
+    cookie      TEXT DEFAULT '',
 
     CONSTRAINT sessions_pkey PRIMARY KEY (user_id, cookie)
 );

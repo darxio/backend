@@ -27,9 +27,8 @@ USER postgres
 RUN /etc/init.d/postgresql start &&\
     psql --echo-all --command "CREATE USER ksu WITH SUPERUSER PASSWORD 'pswd';" &&\
     createdb -O ksu backend_db &&\
-    psql --dbname=food_db --echo-all --command 'CREATE EXTENSION IF NOT EXISTS citext;' &&\
-    psql backend_db -f $GOPATH/backend/database/schemas/users.sql &&\
-    psql backend_db -f $GOPATH/backend/database/schemas/food.sql &&\
+    psql --dbname=backend_db --echo-all --command 'CREATE EXTENSION IF NOT EXISTS citext;' &&\
+    psql backend_db -f $GOPATH/backend/internal/database/scripts/users.sql &&\
     /etc/init.d/postgresql stop
 
 RUN echo "host all  all    0.0.0.0/0  md5" >> /etc/postgresql/$PGSQLVER/main/pg_hba.conf
