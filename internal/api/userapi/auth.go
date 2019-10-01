@@ -29,7 +29,6 @@ func SignUp(ctx *fasthttp.RequestCtx) {
 	cook.SetKey("session")
 	cook.SetValue(cookie)
 
-	log.Println(code)
 	switch code {
 	case fasthttp.StatusCreated:
 		ctx.Response.Header.SetCookie(cook)
@@ -96,7 +95,6 @@ func SignOut(ctx *fasthttp.RequestCtx) {
 
 	code, message := user.SignOut(string(ctx.Request.Header.Cookie("session")))
 
-	log.Println(code)
 	m := &models.Msg{}
 	m.Message = message
 	mJSON, _ := m.MarshalJSON()

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io"
 	"log"
 	"os"
 
@@ -41,6 +42,7 @@ func main() {
 	r.GET("/groups/:name_or_id", groupapi.About)
 
 	log.Println("Listening on http://localhost:8888...")
-	log.SetOutput(logFile)
+	multiWriter := io.MultiWriter(os.Stdout, logFile)
+	log.SetOutput(multiWriter)
 	log.Fatal(fasthttp.ListenAndServe(":8888", r.Handler))
 }
