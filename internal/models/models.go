@@ -7,15 +7,21 @@ type User struct {
 }
 
 // easyjson:json
+type Username struct {
+	Username string `json:"username"`
+}
+
+// easyjson:json
 type Msg struct {
 	Message string `json:"message"`
 }
 
 // easyjson:json
 type Group struct {
+	ID int32 `json:"id"`
 	Name  string `json:"name"`
 	About string `json:"about"`
 }
 
 // easyjson:json
-type GroupsArr []*Group
+type GroupArr []*Group
