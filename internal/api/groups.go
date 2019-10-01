@@ -1,4 +1,4 @@
-package groupapi
+package api
 
 import (
 	"backend/internal/database/group"
@@ -8,11 +8,11 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
-func All(ctx *fasthttp.RequestCtx) {
+func Groups_All(ctx *fasthttp.RequestCtx) {
 
 }
 
-func About(ctx *fasthttp.RequestCtx) {
+func Groups_About(ctx *fasthttp.RequestCtx) {
 	log.Println(string(ctx.Method()) + (" ") + string(ctx.Path()))
 	groupName := ctx.UserValue("name_or_id").(string)
 

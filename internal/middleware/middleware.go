@@ -11,7 +11,7 @@ func Auth(next fasthttp.RequestHandler) fasthttp.RequestHandler {
 		cookie := ctx.Request.Header.Cookie("session")
 
 		log.Println("Sign Out Middleware cookie: " + string(cookie))
-		if cookie == nil {
+		if string(cookie) == "" {
 			ctx.Response.SetStatusCode(fasthttp.StatusUnauthorized)
 			ctx.SetBody([]byte("{\"message\":\"User not authorized.\"}"))
 			return

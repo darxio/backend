@@ -1,4 +1,4 @@
-package foodapi
+package api
 
 import "github.com/valyala/fasthttp"
 

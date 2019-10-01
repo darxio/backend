@@ -1,4 +1,4 @@
-package userapi
+package api
 
 import (
 	"backend/internal/database/user"
@@ -9,12 +9,12 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
-func HealthCheck(ctx *fasthttp.RequestCtx) {
-	log.Println(string(ctx.Method()) + (" ") + string(ctx.Path()))
+func StatusCheck(ctx *fasthttp.RequestCtx) {
+	log.Println("Status Check: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
 	ctx.SetStatusCode(fasthttp.StatusOK)
 }
 
-func SignUp(ctx *fasthttp.RequestCtx) {
+func Users_SignUp(ctx *fasthttp.RequestCtx) {
 	log.Println("Sign Up: " + string(ctx.Method()) + " " + string(ctx.Path()) + " " + string(ctx.PostBody()))
 	u := &models.User{}
 	u.UnmarshalJSON(ctx.PostBody())
@@ -51,7 +51,7 @@ func SignUp(ctx *fasthttp.RequestCtx) {
 	return
 }
 
-func SignIn(ctx *fasthttp.RequestCtx) {
+func Session_SignIn(ctx *fasthttp.RequestCtx) {
 	log.Println("Sign In: " + string(ctx.Method()) + " " + string(ctx.Path()) + " " + string(ctx.PostBody()))
 	u := &models.User{}
 	u.UnmarshalJSON(ctx.PostBody())
@@ -79,7 +79,7 @@ func SignIn(ctx *fasthttp.RequestCtx) {
 		ctx.SetBody(mJSON)
 	case fasthttp.StatusNotFound:
 		ctx.Response.Header.SetCookie(cook)
-		ctx.SetStatusCode(fasthttp.StatusConflict)
+		ctx.SetStatusCode(fasthttp.StatusNotFound)
 		ctx.SetBody(mJSON)
 	case fasthttp.StatusInternalServerError:
 		ctx.Response.Header.SetCookie(cook)
@@ -90,7 +90,7 @@ func SignIn(ctx *fasthttp.RequestCtx) {
 	return
 }
 
-func SignOut(ctx *fasthttp.RequestCtx) {
+func Session_SignOut(ctx *fasthttp.RequestCtx) {
 	log.Println("Sign Out: " + string(ctx.Method()) + " " + string(ctx.Path()) + " " + string(ctx.PostBody()))
 
 	code, message := user.SignOut(string(ctx.Request.Header.Cookie("session")))

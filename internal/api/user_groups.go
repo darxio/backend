@@ -1,4 +1,4 @@
-package userapi
+package api
 
 import (
 	"log"
@@ -6,14 +6,14 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
-func UserGroups(ctx *fasthttp.RequestCtx) {
+func User_Groups(ctx *fasthttp.RequestCtx) {
 	log.Println(string(ctx.Method()) + (" ") + string(ctx.Path()))
 }
 
-func AddGroups(ctx *fasthttp.RequestCtx) {
+func User_AddGroups(ctx *fasthttp.RequestCtx) {
 	log.Println(string(ctx.Method()) + (" ") + string(ctx.Path()))
 }
 
-func DeleteGroups(ctx *fasthttp.RequestCtx) {
+func User_DeleteGroups(ctx *fasthttp.RequestCtx) {
 	log.Println(string(ctx.Method()) + (" ") + string(ctx.Path()))
 }

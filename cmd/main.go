@@ -8,8 +8,7 @@ import (
 	"github.com/buaazp/fasthttprouter"
 	"github.com/valyala/fasthttp"
 
-	"backend/internal/api/groupapi"
-	"backend/internal/api/userapi"
+	"backend/internal/api"
 	mw "backend/internal/middleware"
 )
 
@@ -29,17 +28,20 @@ func main() {
 
 	r := fasthttprouter.New()
 
-	r.GET("/", userapi.HealthCheck)
-	r.POST("/users", userapi.SignUp)
-	r.POST("/session", userapi.SignIn)
-	r.DELETE("/session", mw.Auth(userapi.SignOut))
+	// Authorization
+	r.GET("/", api.StatusCheck)
+	r.POST("/users", api.Users_SignUp)
+	r.POST("/session", api.Session_SignIn)
+	r.DELETE("/session", mw.Auth(api.Session_SignOut))
 
-	r.GET("/me/groups", userapi.UserGroups)
-	r.POST("/me/groups/:name_or_id", userapi.AddGroups)
-	r.DELETE("/me/groups/:name_or_id", userapi.DeleteGroups)
+	// Personalization
+	r.GET("/user/groups", mw.Auth(api.User_Groups))
+	r.POST("/user/groups/:name_or_id", mw.Auth(api.User_AddGroups))
+	r.DELETE("/users/groups/:name_or_id", mw.Auth(api.User_DeleteGroups))
 
-	r.GET("/groups", groupapi.All)
-	r.GET("/groups/:name_or_id", groupapi.About)
+	// Data
+	r.GET("/groups", api.Groups_All)
+	r.GET("/groups/:name_or_id", api.Groups_About)
 
 	log.Println("Listening on http://localhost:8888...")
 	multiWriter := io.MultiWriter(os.Stdout, logFile)

@@ -6,6 +6,8 @@ import (
 
 	"github.com/icrowley/fake"
 	"github.com/jackc/pgx"
+
+	"backend/internal/common"
 )
 
 var database *pgx.ConnPool
@@ -15,16 +17,13 @@ func init() {
 }
 
 func SignUp(username string, password string) (code int, cookie string, message string) {
-	log.Println(len(username))
-	log.Println(len(password))
 	if len(username) < 3 || len(password) < 3 {
 		return 400, "", "Bad username or/and password."
 	}
+
 	var id int
-
-	err := database.QueryRow("INSERT INTO users(username, password) VALUES ($1, $2) RETURNING id;", username, password).Scan(&id)
-
-	log.Println(err)
+	hashedPassword := common.GeneratePasswordHash(password)
+	err := database.QueryRow("INSERT INTO users(username, password) VALUES ($1, $2) RETURNING id;", username, hashedPassword).Scan(&id)
 	if err != nil {
 		pgErr := err.(pgx.PgError)
 		if pgErr.Code == "23505" {
@@ -43,13 +42,16 @@ func SignIn(username string, password string) (code int, cookie string, message 
 		return 400, "", "Bad username or/and password."
 	}
 
-	// kostyl
 	var id int
-	err := database.QueryRow("SELECT id FROM users WHERE username = $1 AND password = $2;", username, password).Scan(&id)
+	var scannedPassword string
+	err := database.QueryRow("SELECT id, password FROM users WHERE username = $1;", username).Scan(&id, &scannedPassword)
 
 	if err == pgx.ErrNoRows {
 		return 404, "", "User not found."
 	} else {
+		if !common.PasswordsMatched(scannedPassword, password) {
+			return 400, "", "Wrong password."
+		}
 		cookie = fake.Sentence()
 		database.QueryRow("INSERT INTO sessions(user_id, cookie) VALUES ($1, $2);", id, cookie)
 		return 200, cookie, "User signed in successfully."
