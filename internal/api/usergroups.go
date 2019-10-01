@@ -137,12 +137,6 @@ func User_DeleteGroup(ctx *fasthttp.RequestCtx) {
 	case fasthttp.StatusOK:
 		ctx.SetStatusCode(fasthttp.StatusOK)
 		ctx.SetBody(groupsJSON)
-	case fasthttp.StatusNotFound:
-		ctx.SetStatusCode(fasthttp.StatusNotFound)
-		m := &models.Msg{}
-		m.Message = message
-		mJSON, _ := m.MarshalJSON()
-		ctx.SetBody(mJSON)
 	case fasthttp.StatusInternalServerError:
 		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
 		m := &models.Msg{}

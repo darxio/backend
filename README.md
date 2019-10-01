@@ -27,4 +27,4 @@ GET | /groups/:name_or_id | | 200 OK, 404 Not Found | {"id":\<int>\,"group":\<st
 POST (!!GET!!) | /user/groups | {"username":\<string\>} | 200 OK, 401 Unauthorized | [{"id":\<int>\,"group":\<string\>, "about": \<string\>}] | + |
 POST (!!GET!!) | /user/groups/:name_or_id | {"username":\<string\>} | 200 OK, 404 Not Found, 401 Unauthorized | {"id":\<int>\,"group":\<string\>, "about": \<string\>} | + |
 POST | /user/groups/:name_or_id/add (!!!!) | {"username":\<string\>} | 200 OK, 404 Not Found, 409 Conflict, 401 Unauthorized | user's current groups after adding a new group: [{"id":\<int>\,"group":\<string\>, "about": \<string\>}] or {"message":\<string\>} | + |
-DELETE | /user/groups/:name_or_id | {"username":\<string\>} | 200 OK, 404 Not Found, 401 Unauthorized |  user's current groups after deleting a group: [{"id":\<int>\,"group":\<string\>, "about": \<string\>}] | + |
+DELETE | /user/groups/:name_or_id | {"username":\<string\>} | 200 OK, 401 Unauthorized |  user's current groups after deleting a group: [{"id":\<int>\,"group":\<string\>, "about": \<string\>}] | + |
