@@ -13,7 +13,7 @@ import (
 func Groups_All(ctx *fasthttp.RequestCtx) {
 	log.Println("Groups All: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
 
-	groups_ := make(models.GroupArr, 0, common.limit)
+	groups_ := make(models.GroupArr, 0, common.Limit)
 	code := groups.All(&groups_)
 
 	groupsJSON, _ := groups_.MarshalJSON()

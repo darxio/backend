@@ -3,7 +3,7 @@ package api
 import (
 	"backend/internal/common"
 	"backend/internal/models"
-	"backend/internal/database/usergroups"
+	usergroups "backend/internal/database/usergroups"
 	"log"
 
 	"github.com/valyala/fasthttp"
@@ -14,8 +14,10 @@ func User_AllGroups(ctx *fasthttp.RequestCtx) {
 	un := &models.Username{}
 	un.UnmarshalJSON(ctx.PostBody())
 
-	groups_ := make(models.GroupArr, 0, limit)
-	code := usergroups.All(un.Username, &groups_)
+	var message string
+
+	groups_ := make(models.GroupArr, 0, common.Limit)
+	code, message := usergroups.All(un.Username, &groups_)
 
 	groupsJSON, _ := groups_.MarshalJSON()
 
@@ -77,12 +79,12 @@ func User_AddGroup(ctx *fasthttp.RequestCtx) {
 	var code int
 	var message string
 
-	groups_ := make(models.GroupArr, 0, limit)
+	groups_ := make(models.GroupArr, 0, common.Limit)
 
 	if groupID != 0 {
-		code, message = usergroups.Add(un.Username, "", groupID, groups_)
+		code, message = usergroups.Add(un.Username, "", groupID, &groups_)
 	} else {
-		code, message = usergroups.Add(un.Username, groupName, 0, groups_)
+		code, message = usergroups.Add(un.Username, groupName, 0, &groups_)
 	}
 
 	groupsJSON, _ := groups_.MarshalJSON()
@@ -114,16 +116,18 @@ func User_AddGroup(ctx *fasthttp.RequestCtx) {
 
 func User_DeleteGroup(ctx *fasthttp.RequestCtx) {
 	log.Println("User DeleteGroups: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
+	un := &models.Username{}
+	un.UnmarshalJSON(ctx.PostBody())
 	groupName, groupID := common.NameOrID(ctx)
 	var code int
 	var message string
 
-	groups_ := make(models.GroupArr, 0, limit)
+	groups_ := make(models.GroupArr, 0, common.Limit)
 
 	if groupID != 0 {
-		code, message = usergroups.Delete(un.Username, "", groupID, groups_)
+		code, message = usergroups.Delete(un.Username, "", groupID, &groups_)
 	} else {
-		code, message = usergroups.Delete(un.Username, groupName, 0, groups_)
+		code, message = usergroups.Delete(un.Username, groupName, 0, &groups_)
 	}
 
 	groupsJSON, _ := groups_.MarshalJSON()
@@ -134,7 +138,15 @@ func User_DeleteGroup(ctx *fasthttp.RequestCtx) {
 		ctx.SetBody(groupsJSON)
 	case fasthttp.StatusNotFound:
 		ctx.SetStatusCode(fasthttp.StatusNotFound)
+		m := &models.Msg{}
+		m.Message = message
+		mJSON, _ := m.MarshalJSON()
+		ctx.SetBody(mJSON)
 	case fasthttp.StatusInternalServerError:
 		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+		m := &models.Msg{}
+		m.Message = message
+		mJSON, _ := m.MarshalJSON()
+		ctx.SetBody(mJSON)
 	}
 }

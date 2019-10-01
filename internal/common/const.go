@@ -1,5 +1,5 @@
 package common
 
 const (
-	limit = 16
+	Limit = 16
 )
