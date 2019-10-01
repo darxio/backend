@@ -2,17 +2,18 @@ package api
 
 import (
 	"backend/internal/common"
-	"backend/internal/models"
 	usergroups "backend/internal/database/usergroups"
+	"backend/internal/models"
 	"log"
 
 	"github.com/valyala/fasthttp"
 )
 
 func User_AllGroups(ctx *fasthttp.RequestCtx) {
-	log.Println("User Groups: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
+	log.Println("User AllGroups: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
 	un := &models.Username{}
 	un.UnmarshalJSON(ctx.PostBody())
+	log.Println(ctx.PostBody())
 
 	var message string
 

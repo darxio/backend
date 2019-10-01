@@ -6,3 +6,4 @@
 6) logs to file +
 7) passwords hide
 8) удалить или редактировать пользователя
+9) разобраться с PostBody()

@@ -35,9 +35,10 @@ func main() {
 	r.DELETE("/session", mw.Auth(api.Session_SignOut))
 
 	// Personalization
-	r.GET("/user/groups", mw.Auth(api.User_AllGroups))
-	r.POST("/user/groups/:name_or_id", mw.Auth(api.User_AddGroup))
-	r.DELETE("/users/groups/:name_or_id", mw.Auth(api.User_DeleteGroup))
+	r.POST("/user/groups", mw.Auth(api.User_AllGroups))
+	r.POST("/user/groups/:name_or_id", mw.Auth(api.User_AboutGroup))
+	r.POST("/user/groups/:name_or_id/add", mw.Auth(api.User_AddGroup))
+	r.DELETE("/user/groups/:name_or_id", mw.Auth(api.User_DeleteGroup))
 
 	// Data
 	r.GET("/groups", api.Groups_All)

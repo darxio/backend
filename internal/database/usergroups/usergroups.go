@@ -4,6 +4,8 @@ import (
 	"backend/internal/database/connection"
 	"backend/internal/models"
 
+	_ "log"
+
 	"github.com/jackc/pgx"
 )
 
@@ -18,7 +20,7 @@ func All(username string, groups *models.GroupArr) (code int, message string) {
 								FROM groups
 								JOIN user_groups
 								ON groups.id = user_groups.group_id
-								WHERE id = (SELECT id FROM users WHERE username = $1);`, username)
+								WHERE user_id = (SELECT id FROM users WHERE username = $1);`, username)
 
 	if err != nil {
 		return 500, "Something went wrong.."
@@ -29,6 +31,7 @@ func All(username string, groups *models.GroupArr) (code int, message string) {
 		rows.Scan(&group.ID, &group.Name, &group.About)
 		*groups = append(*groups, &group)
 	}
+
 	rows.Close()
 
 	return 200, "Successful."
