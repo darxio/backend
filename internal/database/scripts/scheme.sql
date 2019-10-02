@@ -64,8 +64,6 @@ CREATE TABLE excluded_ingredients (
   CONSTRAINT exclingredients_pkey PRIMARY KEY (ingredient_id, user_id)
 );
 
-INSERT INTO groups(name, about) VALUES ('vegan', 'gofuckyourself');
-
 -------------------------------------------
 -- products
 -------------------------------------------
