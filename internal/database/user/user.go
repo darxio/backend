@@ -2,7 +2,6 @@ package user
 
 import (
 	"backend/internal/database/connection"
-	"log"
 
 	"github.com/icrowley/fake"
 	"github.com/jackc/pgx"
@@ -61,7 +60,6 @@ func SignIn(username string, password string) (code int, cookie string, message 
 }
 
 func SignOut(cookie string) (code int, message string) {
-	log.Println(cookie)
 	_, err := database.Exec("DELETE FROM sessions WHERE cookie = $1;", cookie)
 
 	if err != nil {

@@ -15,12 +15,19 @@ func init() {
 	database = connection.Connect()
 }
 
-func All(username string, groups *models.GroupArr) (code int, message string) {
+func All(cookie string, groups *models.GroupArr) (code int, message string) {
+	var id int
+	errS := database.QueryRow(`SELECT user_id FROM sessions WHERE cookie = $1`, cookie).Scan(&id);
+
+	if errS != nil {
+		return 500, "Something went wrong.."
+	}
+
 	rows, err := database.Query(`SELECT id, name, about
 								FROM groups
 								JOIN user_groups
 								ON groups.id = user_groups.group_id
-								WHERE user_id = (SELECT id FROM users WHERE username = $1);`, username)
+								WHERE user_id = $1;`, id)
 
 	if err != nil {
 		return 500, "Something went wrong.."
@@ -37,22 +44,29 @@ func All(username string, groups *models.GroupArr) (code int, message string) {
 	return 200, "Successful."
 }
 
-func About(username string, groupName string, groupID int32, group *models.Group) (code int, message string) {
+func About(cookie string, groupName string, groupID int32, group *models.Group) (code int, message string) {
+	var id int
+	errS := database.QueryRow(`SELECT user_id FROM sessions WHERE cookie = $1`, cookie).Scan(&id);
+
+	if errS != nil {
+		return 500, "Something went wrong.."
+	}
+
 	var err error
 	if groupID != 0 {
 		err = database.QueryRow(`SELECT id, name, about
 								FROM groups
 								JOIN user_groups
 								ON groups.id = user_groups.group_id
-								WHERE user_id = (SELECT id FROM users WHERE username = $1)
-								AND group_id = $2;`, username, groupID).Scan(&group.ID, &group.Name, &group.About)
+								WHERE user_id = $1
+								AND group_id = $2;`, id, groupID).Scan(&group.ID, &group.Name, &group.About)
 	} else {
 		err = database.QueryRow(`SELECT id, name, about
 								FROM groups
 								JOIN user_groups
 								ON groups.id = user_groups.group_id
-								WHERE user_id = (SELECT id FROM users WHERE username = $1)
-								AND name = $2;`, username, groupName).Scan(&group.ID, &group.Name, &group.About)
+								WHERE user_id = $1
+								AND name = $2;`, id, groupName).Scan(&group.ID, &group.Name, &group.About)
 	}
 
 	if err == pgx.ErrNoRows {
@@ -64,12 +78,19 @@ func About(username string, groupName string, groupID int32, group *models.Group
 	return 200, "Successful."
 }
 
-func Add(username string, groupName string, groupID int32, groups *models.GroupArr) (code int, message string) {
+func Add(cookie string, groupName string, groupID int32, groups *models.GroupArr) (code int, message string) {
+	var id int
+	errS := database.QueryRow(`SELECT user_id FROM sessions WHERE cookie = $1`, cookie).Scan(&id);
+
+	if errS != nil {
+		return 500, "Something went wrong.."
+	}
+
 	var err error
 	if groupID != 0 {
-		_, err = database.Exec("INSERT INTO user_groups(user_id, group_id) VALUES ((SELECT id FROM users WHERE username = $1), $2);", username, groupID)
+		_, err = database.Exec("INSERT INTO user_groups(user_id, group_id) VALUES ($1, $2);", id, groupID)
 	} else {
-		_, err = database.Exec("INSERT INTO user_groups(user_id, group_id) VALUES ((SELECT id FROM users WHERE username = $1), (SELECT id FROM groups WHERE name = $2));", username, groupName)
+		_, err = database.Exec("INSERT INTO user_groups(user_id, group_id) VALUES ($1, (SELECT id FROM groups WHERE name = $2));", id, groupName)
 	}
 
 	if err != nil {
@@ -83,20 +104,27 @@ func Add(username string, groupName string, groupID int32, groups *models.GroupA
 		return 500, "Something went wrong.."
 	}
 
-	return All(username, groups)
+	return All(cookie, groups)
 }
 
-func Delete(username string, groupName string, groupID int32, groups *models.GroupArr) (code int, message string) {
+func Delete(cookie string, groupName string, groupID int32, groups *models.GroupArr) (code int, message string) {
+	var id int
+	errS := database.QueryRow(`SELECT user_id FROM sessions WHERE cookie = $1`, cookie).Scan(&id);
+
+	if errS != nil {
+		return 500, "Something went wrong.."
+	}
+
 	var err error
 	if groupID != 0 {
-		_, err = database.Exec("DELETE FROM user_groups WHERE user_id = (SELECT id FROM users WHERE username = $1) AND group_id = $2;", username, groupID)
+		_, err = database.Exec("DELETE FROM user_groups WHERE user_id = $1 AND group_id = $2;", id, groupID)
 	} else {
-		_, err = database.Exec("DELETE FROM user_groups WHERE user_id = (SELECT id FROM users WHERE username = $1) AND group_id = (SELECT id FROM groups WHERE name = $2);", username, groupName)
+		_, err = database.Exec("DELETE FROM user_groups WHERE user_id = $1 AND group_id = (SELECT id FROM groups WHERE name = $2);", id, groupName)
 	}
 
 	if err != nil {
 		return 500, "Something went wrong.."
 	}
 
-	return All(username, groups)
+	return All(cookie, groups)
 }
