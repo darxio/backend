@@ -50,7 +50,7 @@ CREATE TABLE ingredients (
   type_id  BIGINT         REFERENCES ingredient_types(id)
 );
 
-CREATE TABLE group_ingridient_types (
+CREATE TABLE group_ingredient_types (
   group_id      BIGINT    REFERENCES groups(id),
   type_id       BIGINT    REFERENCES ingredient_types(id),
 

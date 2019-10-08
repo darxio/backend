@@ -13,11 +13,11 @@ func init() {
 	database = connection.Connect()
 }
 
-func All(groups *models.GroupArr) int {
+func All(groups *models.GroupArr) (code int, message string) {
 	rows, err := database.Query("SELECT id, name, about FROM groups")
 
 	if err != nil {
-		return 500
+		return 500, "Something went wrong.."
 	}
 
 	for rows.Next() {
@@ -27,10 +27,10 @@ func All(groups *models.GroupArr) int {
 	}
 	rows.Close()
 
-	return 200
+	return 200, "Successful."
 }
 
-func About(groupName string, groupID int32, group *models.Group) int {
+func About(groupName string, groupID int32, group *models.Group) (code int, message string) {
 	var err error
 	if groupID != 0 {
 		err = database.QueryRow("SELECT id, name, about FROM groups WHERE id = $1;", groupID).Scan(&group.ID, &group.Name, &group.About)
@@ -39,10 +39,10 @@ func About(groupName string, groupID int32, group *models.Group) int {
 	}
 
 	if err == pgx.ErrNoRows {
-		return 404
+		return 404, "Group not found."
 	} else if err != nil {
-		return 500
+		return 500, "Something went wrong.."
 	}
 
-	return 200
+	return 200, "Successful."
 }

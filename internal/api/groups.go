@@ -5,16 +5,16 @@ import (
 	"backend/internal/models"
 	"log"
 
-	"github.com/valyala/fasthttp"
 	"backend/internal/common"
-)
 
+	"github.com/valyala/fasthttp"
+)
 
 func Groups_All(ctx *fasthttp.RequestCtx) {
 	log.Println("Groups All: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
 
 	groups_ := make(models.GroupArr, 0, common.Limit)
-	code := groups.All(&groups_)
+	code, message := groups.All(&groups_)
 
 	groupsJSON, _ := groups_.MarshalJSON()
 
@@ -24,6 +24,10 @@ func Groups_All(ctx *fasthttp.RequestCtx) {
 		ctx.SetBody(groupsJSON)
 	case fasthttp.StatusInternalServerError:
 		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+		m := &models.Msg{}
+		m.Message = message
+		mJSON, _ := m.MarshalJSON()
+		ctx.SetBody(mJSON)
 	}
 }
 
@@ -32,11 +36,12 @@ func Groups_About(ctx *fasthttp.RequestCtx) {
 	groupName, groupID := common.NameOrID(ctx)
 
 	var code int
+	var message string
 	g := &models.Group{}
 	if groupID != 0 {
-		code = groups.About("", groupID, g)
+		code, message = groups.About("", groupID, g)
 	} else {
-		code = groups.About(groupName, 0, g)
+		code, message = groups.About(groupName, 0, g)
 	}
 
 	gJSON, _ := g.MarshalJSON()
@@ -47,7 +52,15 @@ func Groups_About(ctx *fasthttp.RequestCtx) {
 		ctx.SetBody(gJSON)
 	case fasthttp.StatusNotFound:
 		ctx.SetStatusCode(fasthttp.StatusNotFound)
+		m := &models.Msg{}
+		m.Message = message
+		mJSON, _ := m.MarshalJSON()
+		ctx.SetBody(mJSON)
 	case fasthttp.StatusInternalServerError:
 		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+		m := &models.Msg{}
+		m.Message = message
+		mJSON, _ := m.MarshalJSON()
+		ctx.SetBody(mJSON)
 	}
 }
