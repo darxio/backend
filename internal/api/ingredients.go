@@ -92,11 +92,3 @@ func Ingredients_GroupAll(ctx *fasthttp.RequestCtx) {
 		ctx.SetBody(mJSON)
 	}
 }
-
-func User_AddExcludedIngredient(ctx *fasthttp.RequestCtx) {
-	log.Println("User AddExcludedIngredient: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
-}
-
-func User_DeleteExcludedIngredient(ctx *fasthttp.RequestCtx) {
-	log.Println("User DeleteExcludedIngredient: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
-}

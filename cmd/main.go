@@ -47,11 +47,12 @@ func main() {
 	// Ingredients
 	r.GET("/ingredients", api.Ingredients_All)
 	r.GET("/ingredients/:name_or_id", api.Ingredients_About)
-	r.GET("/ingredients/:name_or_id/groups/", api.Ingredients_GroupAll) // name or id of groups! -
+	r.GET("/ingredients/:name_or_id/groups/", api.Ingredients_GroupAll)
 
 	// Excluded ingredients
-	r.POST("/user/ingredients/:name_or_id", api.User_AddExcludedIngredient)      // -
-	r.DELETE("/user/ingredients/:name_or_id", api.User_DeleteExcludedIngredient) // -
+	r.GET("/user/ingredients", api.User_AllExcludedIngredient)
+	r.POST("/user/ingredients/:name_or_id", api.User_AddExcludedIngredient)
+	r.DELETE("/user/ingredients/:name_or_id", api.User_DeleteExcludedIngredient)
 
 	r.GET("/products", api.Product_All)
 	r.GET("/products/:barcode", api.Product_GetOneBarcode)
