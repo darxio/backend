@@ -81,3 +81,5 @@ CREATE TABLE product_ingredients (
 
   CONSTRAINT productingredients_pkey PRIMARY KEY (product_id, ingredient_id)
 );
+
+INSERT INTO products(name, barcode) VALUES ('snickers', 11111);

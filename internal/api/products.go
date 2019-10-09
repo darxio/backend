@@ -6,6 +6,7 @@ import (
 	"backend/internal/models"
 
 	"log"
+	"strconv"
 
 	"github.com/valyala/fasthttp"
 )
@@ -33,10 +34,10 @@ func Product_All(ctx *fasthttp.RequestCtx) {
 
 func Product_GetOneBarcode(ctx *fasthttp.RequestCtx) {
 	log.Println("Product GetOneBarcode: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
-	barcode := ctx.UserValue("barcode").(int)
+	barcode, _ := strconv.ParseInt(ctx.UserValue("barcode").(string), 10, 32)
 
 	p := &models.Product{}
-	code, message := products.GetOneBarcode(barcode, p)
+	code, message := products.GetOneBarcode(int(barcode), p)
 
 	pJSON, _ := p.MarshalJSON()
 
