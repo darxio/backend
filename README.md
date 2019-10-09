@@ -35,3 +35,6 @@ GET | /ingredients/groups/:group_name_or_id | | 200 OK, 404 Not Found | [{"id":\
  | | | | | |
 POST | /user/ingredients/:name_or_id | | 200 OK,  404 Not Found, 409 Conflict, 401 Unauthorized | user's current excluded ingredients after adding a new ingredient: [{"id":\<int>\, "name":\<string\>, "about": \<string\>}] or {"message":\<string\>} | + |
 DELETE | /user/ingredients/:name_or_id | | 200 OK, 401 Unauthorized |  user's current excluded ingredients after deleting an ingredient: [{"id":\<int>\, "name":\<string\>, "about": \<string\>}] | + |
+ | | | | | |
+GET | /products | | 200 OK |  [{"id":\<int>\,"name":\<string\>, "barcode": int}] | - |
+GET | /products/:barcode | | 200 OK, 404 Not Found | {"id":\<int>\,"name":\<string\>, "barcode": int} | - |
