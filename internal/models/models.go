@@ -33,9 +33,9 @@ type IngredientArr []*Ingredient
 
 // easyjson:json
 type Product struct {
-	ID      int32  `json:"id"`
+	ID      int64  `json:"id"`
 	Name    string `json:"name"`
-	Barcode string `json:"barcode"`
+	Barcode int64  `json:"barcode"`
 }
 
 // easyjson:json
