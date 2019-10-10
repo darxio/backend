@@ -35,7 +35,7 @@ type IngredientArr []*Ingredient
 type Product struct {
 	ID      int32  `json:"id"`
 	Name    string `json:"name"`
-	Barcode int32  `json:"barcode"`
+	Barcode string `json:"barcode"`
 }
 
 // easyjson:json
