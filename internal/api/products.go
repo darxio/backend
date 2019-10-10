@@ -34,10 +34,10 @@ func Product_All(ctx *fasthttp.RequestCtx) {
 
 func Product_GetOneBarcode(ctx *fasthttp.RequestCtx) {
 	log.Println("Product GetOneBarcode: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
-	barcode, _ := strconv.ParseInt(ctx.UserValue("barcode").(string), 10, 32)
+	barcode, _ := strconv.ParseInt(ctx.UserValue("barcode").(string), 10, 64)
 
 	p := &models.Product{}
-	code, message := products.GetOneBarcode(int(barcode), p)
+	code, message := products.GetOneBarcode(int64(barcode), p)
 
 	pJSON, _ := p.MarshalJSON()
 

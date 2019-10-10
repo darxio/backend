@@ -30,7 +30,7 @@ func All(products *models.ProductArr) (code int, message string) {
 	return 200, "Successful."
 }
 
-func GetOneBarcode(barcode int, product *models.Product) (code int, message string) {
+func GetOneBarcode(barcode int64, product *models.Product) (code int, message string) {
 
 	err := database.QueryRow("SELECT id, name, barcode FROM products WHERE barcode = $1;", barcode).Scan(&product.ID, &product.Name, &product.Barcode)
 
@@ -38,6 +38,7 @@ func GetOneBarcode(barcode int, product *models.Product) (code int, message stri
 		return 404, "Product not found."
 	} else if err != nil {
 		return 500, "Something went wrong.."
+		println(err.Error())
 	}
 
 	return 200, "Successful."
