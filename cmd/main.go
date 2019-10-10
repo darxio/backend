@@ -54,7 +54,7 @@ func main() {
 	r.POST("/user/ingredients/:name_or_id", api.User_AddExcludedIngredient)
 	r.DELETE("/user/ingredients/:name_or_id", api.User_DeleteExcludedIngredient)
 
-	r.GET("/products", api.Product_All)
+	// r.GET("/products", api.Product_All)
 	r.GET("/products/:barcode", api.Product_GetOneBarcode)
 
 	log.Println("Listening on http://localhost:8888...")

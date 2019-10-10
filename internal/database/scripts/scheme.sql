@@ -80,7 +80,7 @@ CREATE TABLE excluded_ingredients (
 CREATE TABLE products (
   id       BIGSERIAL      PRIMARY KEY,
   name     CITEXT         NOT NULL,
-  barcode  TEXT            NOT NULL 
+  barcode  BIGINT            NOT NULL 
   -- nutrition facts
 );
 
