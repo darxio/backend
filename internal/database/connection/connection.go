@@ -16,7 +16,7 @@ func Connect() (conn *pgx.ConnPool) {
 		connConfig := pgx.ConnConfig{
 			User:     "manager",
 			Host:     "localhost",
-			Port:     5000,
+			Port:     5432,
 			Database: "darx_db",
 		}
 
