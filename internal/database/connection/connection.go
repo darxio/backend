@@ -14,11 +14,10 @@ const maxConn = 8
 func Connect() (conn *pgx.ConnPool) {
 	once.Do(func() {
 		connConfig := pgx.ConnConfig{
-			User:     "ksu",
-			Password: "pswd",
+			User:     "manager",
 			Host:     "localhost",
-			Port:     5432,
-			Database: "backend_db",
+			Port:     5000,
+			Database: "darx_db",
 		}
 
 		DB, _ = pgx.NewConnPool(pgx.ConnPoolConfig{

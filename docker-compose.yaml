@@ -2,5 +2,9 @@ version: '3'
 services:
   backend:
     build: .
+    network: host
     ports:
-    - "8888:8888"
+      - "8888:8888"
+      - "5432:5000"
+    volumes:
+      - ./logs:/opt/go/backend/logs

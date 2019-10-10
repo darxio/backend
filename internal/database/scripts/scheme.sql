@@ -1,4 +1,13 @@
 CREATE EXTENSION IF NOT EXISTS CITEXT;
+DROP TABLE users CASCADE;
+DROP TABLE sessions CASCADE;
+DROP TABLE groups CASCADE;
+DROP TABLE user_groups CASCADE;
+DROP TABLE ingredient_types CASCADE;
+DROP TABLE group_ingredient_types CASCADE;
+DROP TABLE excluded_ingredients CASCADE;
+DROP TABLE products CASCADE;
+DROP TABLE product_ingredients CASCADE;
 
 -------------------------------------------
 -- users & sessions
@@ -71,7 +80,7 @@ CREATE TABLE excluded_ingredients (
 CREATE TABLE products (
   id       BIGSERIAL      PRIMARY KEY,
   name     CITEXT         NOT NULL,
-  barcode  INT            NOT NULL DEFAULT 0
+  barcode  TEXT            NOT NULL 
   -- nutrition facts
 );
 
