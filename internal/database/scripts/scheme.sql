@@ -4,7 +4,6 @@ DROP TABLE sessions CASCADE;
 DROP TABLE groups CASCADE;
 DROP TABLE user_groups CASCADE;
 DROP TABLE ingredients CASCADE;
-DROP TABLE ingredient_types CASCADE;
 DROP TABLE group_ingredient_types CASCADE;
 DROP TABLE excluded_ingredients CASCADE;
 DROP TABLE products CASCADE;
