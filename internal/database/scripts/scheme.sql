@@ -48,23 +48,17 @@ CREATE TABLE user_groups (
 -- ingredients
 -------------------------------------------
 
-CREATE TABLE ingredient_types (
-  id       BIGSERIAL      PRIMARY KEY,
-  type     TEXT           NOT NULL DEFAULT '' UNIQUE
-);
-
 CREATE TABLE ingredients (
   id       BIGSERIAL      PRIMARY KEY,
   name     CITEXT         NOT NULL UNIQUE,
-  about    TEXT           NOT NULL DEFAULT '',
-  type_id  BIGINT         REFERENCES ingredient_types(id)
+  type     TEXT           NOT NULL DEFAULT ''
 );
 
 CREATE TABLE group_ingredient_types (
-  group_id      BIGINT    REFERENCES groups(id),
-  type_id       BIGINT    REFERENCES ingredient_types(id),
+  group_id            BIGINT    REFERENCES groups(id),
+  ingredient_id       BIGINT    REFERENCES ingredients(id),
 
-  CONSTRAINT grouptypes_pkey PRIMARY KEY (group_id, type_id)
+  CONSTRAINT grouptypes_pkey PRIMARY KEY (group_id, ingredient_id)
 );
 
 CREATE TABLE excluded_ingredients (
