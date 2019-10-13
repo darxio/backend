@@ -41,8 +41,6 @@ func GetOneBarcode(barcode int64, product *models.Product) (code int, message st
 	WHERE p.barcode=$1
 	GROUP BY p.barcode;`, barcode).Scan(&product.Barcode, &product.Name, &product.IngredientsList, &product.IngredientTypes)
 
-
-								log.Println(err)
 	if err == pgx.ErrNoRows {
 		return 404, "Product not found."
 	} else if err != nil {
