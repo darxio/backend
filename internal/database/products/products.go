@@ -31,11 +31,11 @@ func All(products *models.ProductArr) (code int, message string) {
 }
 
 func GetOneBarcode(barcode int64, product *models.Product) (code int, message string) {
-	err := database.QueryRow(`SELECT p.barcode, p.name, array_agg(ingr.name::TEXT) AS ingredients, array_agg(ingr.type::TEXT) AS ingredient_types
+	err := database.QueryRow(`SELECT p.barcode, p.name, array_agg(COALESCE(ingr.name::TEXT,'')) AS ingredients, array_agg(COALESCE(ingr.type::TEXT,'')) AS ingredient_types
 	FROM products p
-	JOIN product_ingredients i
+	FULL OUTER JOIN product_ingredients i
 	ON p.barcode = i.product_barcode
-	JOIN ingredients ingr
+	FULL OUTER JOIN ingredients ingr
 	ON i.ingredient_id = ingr.id
 	WHERE p.barcode=$1
 	GROUP BY p.barcode;`, barcode).Scan(&product.Barcode, &product.Name, &product.IngredientsList, &product.IngredientTypes)
