@@ -14,7 +14,7 @@ func init() {
 }
 
 func All(products *models.ProductArr) (code int, message string) {
-	rows, err := database.Query("SELECT id, name, barcode FROM products")
+	rows, err := database.Query("SELECT name, barcode FROM products")
 
 	if err != nil {
 		return 500, "Something went wrong.."
@@ -22,7 +22,7 @@ func All(products *models.ProductArr) (code int, message string) {
 
 	for rows.Next() {
 		product := models.Product{}
-		rows.Scan(&product.ID, &product.Name, &product.Barcode)
+		rows.Scan(&product.Name, &product.Barcode)
 		*products = append(*products, &product)
 	}
 	rows.Close()
@@ -32,7 +32,7 @@ func All(products *models.ProductArr) (code int, message string) {
 
 func GetOneBarcode(barcode int64, product *models.Product) (code int, message string) {
 
-	err := database.QueryRow("SELECT id, name, barcode FROM products WHERE barcode = $1;", barcode).Scan(&product.ID, &product.Name, &product.Barcode)
+	err := database.QueryRow("SELECT name, barcode FROM products WHERE barcode = $1;", barcode).Scan(&product.Name, &product.Barcode)
 
 	if err == pgx.ErrNoRows {
 		return 404, "Product not found."
