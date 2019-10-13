@@ -486,8 +486,8 @@ func easyjsonD2b7633eDecodeBackendInternalModels5(in *jlexer.Lexer, out *Ingredi
 			out.ID = int32(in.Int32())
 		case "name":
 			out.Name = string(in.String())
-		case "about":
-			out.About = string(in.String())
+		case "type":
+			out.Type = string(in.String())
 		default:
 			in.SkipRecursive()
 		}
@@ -513,9 +513,9 @@ func easyjsonD2b7633eEncodeBackendInternalModels5(out *jwriter.Writer, in Ingred
 		out.String(string(in.Name))
 	}
 	{
-		const prefix string = ",\"about\":"
+		const prefix string = ",\"type\":"
 		out.RawString(prefix)
-		out.String(string(in.About))
+		out.String(string(in.Type))
 	}
 	out.RawByte('}')
 }

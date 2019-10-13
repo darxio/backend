@@ -23,9 +23,9 @@ type GroupArr []*Group
 
 // easyjson:json
 type Ingredient struct {
-	ID    int32  `json:"id"`
-	Name  string `json:"name"`
-	About string `json:"about"`
+	ID   int32  `json:"id"`
+	Name string `json:"name"`
+	Type string `json:"type"`
 }
 
 // easyjson:json

@@ -14,7 +14,7 @@ func init() {
 }
 
 func All(ingredients *models.IngredientArr) (code int, message string) {
-	rows, err := database.Query(`SELECT id, name, about FROM ingredients;`)
+	rows, err := database.Query(`SELECT id, name, type FROM ingredients;`)
 
 	if err != nil {
 		return 500, "Something went wrong.."
@@ -22,7 +22,7 @@ func All(ingredients *models.IngredientArr) (code int, message string) {
 
 	for rows.Next() {
 		ingredient := models.Ingredient{}
-		rows.Scan(&ingredient.ID, &ingredient.Name, &ingredient.About)
+		rows.Scan(&ingredient.ID, &ingredient.Name, &ingredient.Type)
 		*ingredients = append(*ingredients, &ingredient)
 	}
 	rows.Close()
