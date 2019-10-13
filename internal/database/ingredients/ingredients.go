@@ -14,7 +14,7 @@ func init() {
 }
 
 func All(ingredients *models.IngredientArr) (code int, message string) {
-	rows, err := database.Query("SELECT id, name, about FROM ingredients")
+	rows, err := database.Query(`SELECT id, name, about FROM ingredients;`)
 
 	if err != nil {
 		return 500, "Something went wrong.."
@@ -33,9 +33,9 @@ func All(ingredients *models.IngredientArr) (code int, message string) {
 func About(ingredientName string, ingredientID int32, ingredient *models.Ingredient) (code int, message string) {
 	var err error
 	if ingredientID != 0 {
-		err = database.QueryRow("SELECT id, name, about FROM ingredients WHERE id = $1;", ingredientID).Scan(&ingredient.ID, &ingredient.Name, &ingredient.About)
+		err = database.QueryRow(`SELECT id, name, about FROM ingredients WHERE id = $1;`, ingredientID).Scan(&ingredient.ID, &ingredient.Name, &ingredient.About)
 	} else {
-		err = database.QueryRow("SELECT id, name, about FROM ingredients WHERE name = $1;", ingredientName).Scan(&ingredient.ID, &ingredient.Name, &ingredient.About)
+		err = database.QueryRow(`SELECT id, name, about FROM ingredients WHERE name = $1;`, ingredientName).Scan(&ingredient.ID, &ingredient.Name, &ingredient.About)
 	}
 
 	if err == pgx.ErrNoRows {

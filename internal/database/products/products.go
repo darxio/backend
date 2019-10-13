@@ -5,6 +5,7 @@ import (
 	"backend/internal/models"
 
 	"github.com/jackc/pgx"
+	"log"
 )
 
 var database *pgx.ConnPool
@@ -14,7 +15,7 @@ func init() {
 }
 
 func All(products *models.ProductArr) (code int, message string) {
-	rows, err := database.Query("SELECT barcode, name FROM products")
+	rows, err := database.Query(`SELECT barcode, name FROM products`)
 
 	if err != nil {
 		return 500, "Something went wrong.."
@@ -31,9 +32,17 @@ func All(products *models.ProductArr) (code int, message string) {
 }
 
 func GetOneBarcode(barcode int64, product *models.Product) (code int, message string) {
+	err := database.QueryRow(`SELECT p.barcode, p.name, array_agg(ingr.name::TEXT) AS ingredients, array_agg(ingr.type::TEXT) AS ingredient_types
+	FROM products p
+	JOIN product_ingredients i
+	ON p.barcode = i.product_barcode
+	JOIN ingredients ingr
+	ON i.ingredient_id = ingr.id
+	WHERE p.barcode=$1
+	GROUP BY p.barcode;`, barcode).Scan(&product.Barcode, &product.Name, &product.IngredientsList, &product.IngredientTypes)
 
-	err := database.QueryRow("SELECT barcode, name FROM products WHERE barcode = $1;", barcode).Scan(&product.Barcode, &product.Name)
 
+								log.Println(err)
 	if err == pgx.ErrNoRows {
 		return 404, "Product not found."
 	} else if err != nil {

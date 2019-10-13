@@ -14,7 +14,7 @@ func init() {
 }
 
 func All(groups *models.GroupArr) (code int, message string) {
-	rows, err := database.Query("SELECT id, name, about FROM groups")
+	rows, err := database.Query(`SELECT id, name, about FROM groups;`)
 
 	if err != nil {
 		return 500, "Something went wrong.."
@@ -33,9 +33,9 @@ func All(groups *models.GroupArr) (code int, message string) {
 func About(groupName string, groupID int32, group *models.Group) (code int, message string) {
 	var err error
 	if groupID != 0 {
-		err = database.QueryRow("SELECT id, name, about FROM groups WHERE id = $1;", groupID).Scan(&group.ID, &group.Name, &group.About)
+		err = database.QueryRow(`SELECT id, name, about FROM groups WHERE id = $1;`, groupID).Scan(&group.ID, &group.Name, &group.About)
 	} else {
-		err = database.QueryRow("SELECT id, name, about FROM groups WHERE name = $1;", groupName).Scan(&group.ID, &group.Name, &group.About)
+		err = database.QueryRow(`SELECT id, name, about FROM groups WHERE name = $1;`, groupName).Scan(&group.ID, &group.Name, &group.About)
 	}
 
 	if err == pgx.ErrNoRows {

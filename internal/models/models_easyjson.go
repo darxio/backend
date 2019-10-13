@@ -191,6 +191,52 @@ func easyjsonD2b7633eDecodeBackendInternalModels2(in *jlexer.Lexer, out *Product
 			out.Barcode = int64(in.Int64())
 		case "name":
 			out.Name = string(in.String())
+		case "ingredients":
+			if in.IsNull() {
+				in.Skip()
+				out.IngredientsList = nil
+			} else {
+				in.Delim('[')
+				if out.IngredientsList == nil {
+					if !in.IsDelim(']') {
+						out.IngredientsList = make([]string, 0, 4)
+					} else {
+						out.IngredientsList = []string{}
+					}
+				} else {
+					out.IngredientsList = (out.IngredientsList)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v4 string
+					v4 = string(in.String())
+					out.IngredientsList = append(out.IngredientsList, v4)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		case "ingredient_types":
+			if in.IsNull() {
+				in.Skip()
+				out.IngredientTypes = nil
+			} else {
+				in.Delim('[')
+				if out.IngredientTypes == nil {
+					if !in.IsDelim(']') {
+						out.IngredientTypes = make([]string, 0, 4)
+					} else {
+						out.IngredientTypes = []string{}
+					}
+				} else {
+					out.IngredientTypes = (out.IngredientTypes)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v5 string
+					v5 = string(in.String())
+					out.IngredientTypes = append(out.IngredientTypes, v5)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
 		default:
 			in.SkipRecursive()
 		}
@@ -214,6 +260,38 @@ func easyjsonD2b7633eEncodeBackendInternalModels2(out *jwriter.Writer, in Produc
 		const prefix string = ",\"name\":"
 		out.RawString(prefix)
 		out.String(string(in.Name))
+	}
+	{
+		const prefix string = ",\"ingredients\":"
+		out.RawString(prefix)
+		if in.IngredientsList == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+			out.RawString("null")
+		} else {
+			out.RawByte('[')
+			for v6, v7 := range in.IngredientsList {
+				if v6 > 0 {
+					out.RawByte(',')
+				}
+				out.String(string(v7))
+			}
+			out.RawByte(']')
+		}
+	}
+	{
+		const prefix string = ",\"ingredient_types\":"
+		out.RawString(prefix)
+		if in.IngredientTypes == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+			out.RawString("null")
+		} else {
+			out.RawByte('[')
+			for v8, v9 := range in.IngredientTypes {
+				if v8 > 0 {
+					out.RawByte(',')
+				}
+				out.String(string(v9))
+			}
+			out.RawByte(']')
+		}
 	}
 	out.RawByte('}')
 }
@@ -324,17 +402,17 @@ func easyjsonD2b7633eDecodeBackendInternalModels4(in *jlexer.Lexer, out *Ingredi
 			*out = (*out)[:0]
 		}
 		for !in.IsDelim(']') {
-			var v4 *Ingredient
+			var v10 *Ingredient
 			if in.IsNull() {
 				in.Skip()
-				v4 = nil
+				v10 = nil
 			} else {
-				if v4 == nil {
-					v4 = new(Ingredient)
+				if v10 == nil {
+					v10 = new(Ingredient)
 				}
-				(*v4).UnmarshalEasyJSON(in)
+				(*v10).UnmarshalEasyJSON(in)
 			}
-			*out = append(*out, v4)
+			*out = append(*out, v10)
 			in.WantComma()
 		}
 		in.Delim(']')
@@ -348,14 +426,14 @@ func easyjsonD2b7633eEncodeBackendInternalModels4(out *jwriter.Writer, in Ingred
 		out.RawString("null")
 	} else {
 		out.RawByte('[')
-		for v5, v6 := range in {
-			if v5 > 0 {
+		for v11, v12 := range in {
+			if v11 > 0 {
 				out.RawByte(',')
 			}
-			if v6 == nil {
+			if v12 == nil {
 				out.RawString("null")
 			} else {
-				(*v6).MarshalEasyJSON(out)
+				(*v12).MarshalEasyJSON(out)
 			}
 		}
 		out.RawByte(']')
@@ -482,17 +560,17 @@ func easyjsonD2b7633eDecodeBackendInternalModels6(in *jlexer.Lexer, out *GroupAr
 			*out = (*out)[:0]
 		}
 		for !in.IsDelim(']') {
-			var v7 *Group
+			var v13 *Group
 			if in.IsNull() {
 				in.Skip()
-				v7 = nil
+				v13 = nil
 			} else {
-				if v7 == nil {
-					v7 = new(Group)
+				if v13 == nil {
+					v13 = new(Group)
 				}
-				(*v7).UnmarshalEasyJSON(in)
+				(*v13).UnmarshalEasyJSON(in)
 			}
-			*out = append(*out, v7)
+			*out = append(*out, v13)
 			in.WantComma()
 		}
 		in.Delim(']')
@@ -506,14 +584,14 @@ func easyjsonD2b7633eEncodeBackendInternalModels6(out *jwriter.Writer, in GroupA
 		out.RawString("null")
 	} else {
 		out.RawByte('[')
-		for v8, v9 := range in {
-			if v8 > 0 {
+		for v14, v15 := range in {
+			if v14 > 0 {
 				out.RawByte(',')
 			}
-			if v9 == nil {
+			if v15 == nil {
 				out.RawString("null")
 			} else {
-				(*v9).MarshalEasyJSON(out)
+				(*v15).MarshalEasyJSON(out)
 			}
 		}
 		out.RawByte(']')
