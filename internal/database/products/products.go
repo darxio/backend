@@ -5,7 +5,6 @@ import (
 	"backend/internal/models"
 
 	"github.com/jackc/pgx"
-	"log"
 )
 
 var database *pgx.ConnPool
