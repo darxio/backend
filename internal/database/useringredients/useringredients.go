@@ -15,7 +15,7 @@ func init() {
 
 func AllExcludedIngredients(cookie string, ingredients *models.IngredientArr) (code int, message string) {
 	var id int
-	errS := database.QueryRow(`SELECT user_id FROM sessions WHERE cookie = $1`, cookie).Scan(&id);
+	errS := database.QueryRow(`SELECT user_id FROM sessions WHERE cookie = $1`, cookie).Scan(&id)
 
 	if errS != nil {
 		return 500, "Something went wrong.."
@@ -33,7 +33,7 @@ func AllExcludedIngredients(cookie string, ingredients *models.IngredientArr) (c
 
 	for rows.Next() {
 		ingredient := models.Ingredient{}
-		rows.Scan(&ingredient.ID, &ingredient.Name, &ingredient.About)
+		rows.Scan(&ingredient.ID, &ingredient.Name, &ingredient.Type)
 		*ingredients = append(*ingredients, &ingredient)
 	}
 
@@ -42,10 +42,9 @@ func AllExcludedIngredients(cookie string, ingredients *models.IngredientArr) (c
 	return 200, "Successful."
 }
 
-
 func AddExcludedIngredient(cookie string, ingredientName string, ingredientID int32, ingredients *models.IngredientArr) (code int, message string) {
 	var id int
-	errS := database.QueryRow(`SELECT user_id FROM sessions WHERE cookie = $1`, cookie).Scan(&id);
+	errS := database.QueryRow(`SELECT user_id FROM sessions WHERE cookie = $1`, cookie).Scan(&id)
 
 	if errS != nil {
 		return 500, "Something went wrong.."
@@ -74,7 +73,7 @@ func AddExcludedIngredient(cookie string, ingredientName string, ingredientID in
 
 func DeleteExcludedIngredient(cookie string, ingredientName string, ingredientID int32, ingredients *models.IngredientArr) (code int, message string) {
 	var id int
-	errS := database.QueryRow(`SELECT user_id FROM sessions WHERE cookie = $1`, cookie).Scan(&id);
+	errS := database.QueryRow(`SELECT user_id FROM sessions WHERE cookie = $1`, cookie).Scan(&id)
 
 	if errS != nil {
 		return 500, "Something went wrong.."

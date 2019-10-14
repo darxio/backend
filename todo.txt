@@ -4,6 +4,5 @@
 4) генерация кук
 5) fix kostyl +
 6) logs to file +
-7) passwords hide
+7) passwords hide +
 8) удалить или редактировать пользователя
-9) разобраться с PostBody()
