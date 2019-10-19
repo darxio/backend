@@ -3,6 +3,7 @@ package groups
 import (
 	"backend/internal/database/connection"
 	"backend/internal/models"
+	"log"
 
 	"github.com/jackc/pgx"
 )
@@ -17,7 +18,8 @@ func All(groups *models.GroupArr) (code int, message string) {
 	rows, err := database.Query(`SELECT id, name, about FROM groups;`)
 
 	if err != nil {
-		return 500, "Something went wrong.."
+		log.Println("database/groups.go: 500, " + err.Error())
+		return 500, err.Error()
 	}
 
 	for rows.Next() {
@@ -39,9 +41,11 @@ func About(groupName string, groupID int32, group *models.Group) (code int, mess
 	}
 
 	if err == pgx.ErrNoRows {
+		log.Println("database/groups.go: 404, " + err.Error())
 		return 404, "Group not found."
 	} else if err != nil {
-		return 500, "Something went wrong.."
+		log.Println("database/groups.go: 500, " + err.Error())
+		return 500, err.Error()
 	}
 
 	return 200, "Successful."

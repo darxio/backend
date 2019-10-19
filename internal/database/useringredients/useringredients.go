@@ -5,6 +5,7 @@ import (
 	"backend/internal/models"
 
 	"github.com/jackc/pgx"
+	"log"
 )
 
 var database *pgx.ConnPool
@@ -18,7 +19,8 @@ func AllExcludedIngredients(cookie string, ingredients *models.IngredientArr) (c
 	errS := database.QueryRow(`SELECT user_id FROM sessions WHERE cookie = $1`, cookie).Scan(&id)
 
 	if errS != nil {
-		return 500, "Something went wrong.."
+		log.Println("database/useringredients.go: 500, " + errS.Error())
+		return 500, errS.Error()
 	}
 
 	rows, err := database.Query(`SELECT id, name, about
@@ -28,7 +30,8 @@ func AllExcludedIngredients(cookie string, ingredients *models.IngredientArr) (c
 								WHERE user_id = $1;`, id)
 
 	if err != nil {
-		return 500, "Something went wrong.."
+		log.Println("database/useringredients.go: 500, " + err.Error())
+		return 500, err.Error()
 	}
 
 	for rows.Next() {
@@ -47,7 +50,8 @@ func AddExcludedIngredient(cookie string, ingredientName string, ingredientID in
 	errS := database.QueryRow(`SELECT user_id FROM sessions WHERE cookie = $1`, cookie).Scan(&id)
 
 	if errS != nil {
-		return 500, "Something went wrong.."
+		log.Println("database/useringredients.go: 500, " + errS.Error())
+		return 500, errS.Error()
 	}
 
 	var err error
@@ -60,11 +64,14 @@ func AddExcludedIngredient(cookie string, ingredientName string, ingredientID in
 	if err != nil {
 		pgErr := err.(pgx.PgError)
 		if pgErr.Code == "23505" {
+			log.Println("database/useringredients.go: 409, " + err.Error())
 			return 409, "This user has already excluded this ingredient."
 		}
 		if pgErr.Code == "23503" {
+			log.Println("database/useringredients.go: 404, " + err.Error())
 			return 404, "This ingredient doesn't exist."
 		}
+		log.Println("database/useringredients.go: 500, " + err.Error())
 		return 500, "Something went wrong.."
 	}
 
@@ -76,7 +83,8 @@ func DeleteExcludedIngredient(cookie string, ingredientName string, ingredientID
 	errS := database.QueryRow(`SELECT user_id FROM sessions WHERE cookie = $1`, cookie).Scan(&id)
 
 	if errS != nil {
-		return 500, "Something went wrong.."
+		log.Println("database/useringredients.go: 500, " + errS.Error())
+		return 500, errS.Error()
 	}
 
 	var err error
@@ -87,7 +95,8 @@ func DeleteExcludedIngredient(cookie string, ingredientName string, ingredientID
 	}
 
 	if err != nil {
-		return 500, "Something went wrong.."
+		log.Println("database/useringredients.go: 500, " + err.Error())
+		return 500, err.Error()
 	}
 
 	return AllExcludedIngredients(cookie, ingredients)
