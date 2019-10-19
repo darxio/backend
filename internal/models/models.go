@@ -2,8 +2,9 @@ package models
 
 // easyjson:json
 type User struct {
+	ID       int32  `json:"id"`
 	Username string `json:"username"`
-	Password string `json:"password"`
+	Password string `json:"password,omitempty"`
 }
 
 // easyjson:json
@@ -33,7 +34,7 @@ type IngredientArr []*Ingredient
 
 // easyjson:json
 type Product struct {
-	Barcode         int64    `json:"barcode"`
+	Barcode         uint64   `json:"barcode"`
 	Name            string   `json:"name"`
 	IngredientsList []string `json:"ingredients"`
 	IngredientTypes []string `json:"ingredient_types"`

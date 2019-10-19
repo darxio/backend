@@ -36,6 +36,8 @@ func easyjsonD2b7633eDecodeBackendInternalModels(in *jlexer.Lexer, out *User) {
 			continue
 		}
 		switch key {
+		case "id":
+			out.ID = int32(in.Int32())
 		case "username":
 			out.Username = string(in.String())
 		case "password":
@@ -55,8 +57,13 @@ func easyjsonD2b7633eEncodeBackendInternalModels(out *jwriter.Writer, in User) {
 	first := true
 	_ = first
 	{
-		const prefix string = ",\"username\":"
+		const prefix string = ",\"id\":"
 		out.RawString(prefix[1:])
+		out.Int32(int32(in.ID))
+	}
+	{
+		const prefix string = ",\"username\":"
+		out.RawString(prefix)
 		out.String(string(in.Username))
 	}
 	{
@@ -188,7 +195,7 @@ func easyjsonD2b7633eDecodeBackendInternalModels2(in *jlexer.Lexer, out *Product
 		}
 		switch key {
 		case "barcode":
-			out.Barcode = int64(in.Int64())
+			out.Barcode = uint64(in.Uint64())
 		case "name":
 			out.Name = string(in.String())
 		case "ingredients":
@@ -254,7 +261,7 @@ func easyjsonD2b7633eEncodeBackendInternalModels2(out *jwriter.Writer, in Produc
 	{
 		const prefix string = ",\"barcode\":"
 		out.RawString(prefix[1:])
-		out.Int64(int64(in.Barcode))
+		out.Uint64(uint64(in.Barcode))
 	}
 	{
 		const prefix string = ",\"name\":"

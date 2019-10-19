@@ -8,6 +8,7 @@ import (
 	"github.com/jackc/pgx"
 
 	"backend/internal/common"
+	"backend/internal/models"
 )
 
 var database *pgx.ConnPool
@@ -16,15 +17,15 @@ func init() {
 	database = connection.Connect()
 }
 
-func SignUp(username string, password string) (code int, cookie string, message string) {
-	if len(username) < 3 || len(password) < 3 {
+func SignUp(u *models.User) (code int, cookie string, message string) {
+	if len(u.Username) < 3 || len(u.Password) < 3 {
 		log.Println("database/user.go: 400, Bad username or/and password.")
 		return 400, "", "Bad username or/and password."
 	}
 
 	var id int
-	hashedPassword := common.GeneratePasswordHash(password)
-	err := database.QueryRow("INSERT INTO users(username, password) VALUES ($1, $2) RETURNING id;", username, hashedPassword).Scan(&id)
+	hashedPassword := common.GeneratePasswordHash(u.Password)
+	err := database.QueryRow("INSERT INTO users(username, password) VALUES ($1, $2) RETURNING id, username;", u.Username, hashedPassword).Scan(&u.ID, &u.Username)
 	if err != nil {
 		pgErr := err.(pgx.PgError)
 		if pgErr.Code == "23505" {
@@ -37,18 +38,19 @@ func SignUp(username string, password string) (code int, cookie string, message 
 
 	cookie = fake.Sentence()
 	database.QueryRow("INSERT INTO sessions(user_id, cookie) VALUES ($1, $2);", id, cookie)
+	u.Password = ""
 	return 201, cookie, "User created successfully."
 }
 
-func SignIn(username string, password string) (code int, cookie string, message string) {
-	if len(username) < 3 || len(password) < 3 {
+func SignIn(u *models.User) (code int, cookie string, message string) {
+	if len(u.Username) < 3 || len(u.Password) < 3 {
 		log.Println("database/user.go: 400, Bad username or/and password.")
 		return 400, "", "Bad username or/and password."
 	}
 
 	var id int
 	var scannedPassword string
-	err := database.QueryRow("SELECT id, password FROM users WHERE username = $1;", username).Scan(&id, &scannedPassword)
+	err := database.QueryRow("SELECT id, username, password FROM users WHERE username = $1;", u.Username).Scan(&u.ID, &u.Username, &scannedPassword)
 
 	if err != nil {
 		if err == pgx.ErrNoRows {
@@ -59,13 +61,14 @@ func SignIn(username string, password string) (code int, cookie string, message 
 		return 500, "", err.Error()
 	}
 
-	if !common.PasswordsMatched(scannedPassword, password) {
+	if !common.PasswordsMatched(scannedPassword, u.Password) {
 		log.Println("database/user.go: 400, Wrong password.")
 		return 400, "", "Wrong password."
 	}
 
 	cookie = fake.Sentence()
 	database.QueryRow("INSERT INTO sessions(user_id, cookie) VALUES ($1, $2);", id, cookie)
+	u.Password = ""
 	return 200, cookie, "User signed in successfully."
 }
 
