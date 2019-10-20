@@ -61,6 +61,8 @@ func GetOneBarcode(barcode int64, productExt *models.ProductExtended, productShr
 	FROM products_extended
 	WHERE barcode = $1;`, barcode).Scan(&productExt.Barcode, &productExt.Name, &productExt.Description, &productExt.Contents, &productExt.CategoryURL, &productExt.Mass, &productExt.BestBefore, &productExt.Nutrition, &productExt.Manufacturer, &productExt.Image)
 
+	product.Image = "http://www.goodsmatrix.ru/" + product.Image
+
 	if err == pgx.ErrNoRows {
 		errSelect := database.QueryRow(`SELECT barcode, name FROM products WHERE barcode = $1;`, barcode).Scan(&productShr.Barcode, &productShr.Name)
 
