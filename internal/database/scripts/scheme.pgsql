@@ -77,6 +77,19 @@ CREATE TABLE products (
   -- nutrition facts
 );
 
+CREATE TABLE IF NOT EXISTS products_extended(
+  barcode bigint primary key,
+  name text,
+  description text,
+  contents text,
+  category_url text,
+  mass text,
+  bestbefore text,
+  nutrition text,
+  manufacturer text,
+  image text
+);
+
 CREATE TABLE product_ingredients (
   product_barcode      BIGINT    REFERENCES products(barcode),
   ingredient_id        BIGINT    REFERENCES ingredients(id),
