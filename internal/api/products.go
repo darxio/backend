@@ -14,7 +14,7 @@ import (
 func Product_All(ctx *fasthttp.RequestCtx) {
 	log.Println("Product All: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
 
-	products_ := make(models.ProductArr, 0, common.Limit)
+	products_ := make(models.ProductExtendedArr, 0, common.Limit)
 	code, message := products.All(&products_)
 
 	productsJSON, _ := products_.MarshalJSON()
@@ -36,10 +36,17 @@ func Product_GetOneBarcode(ctx *fasthttp.RequestCtx) {
 	log.Println("Product GetOneBarcode: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
 	barcode, _ := strconv.ParseInt(ctx.UserValue("barcode").(string), 10, 64)
 
-	p := &models.Product{}
-	code, message := products.GetOneBarcode(barcode, p)
+	pExt := &models.ProductExtended{}
+	pShr := &models.ProductShrinked{}
+	shrinked := false
+	code, message := products.GetOneBarcode(barcode, pExt, pShr, shrinked)
 
-	pJSON, _ := p.MarshalJSON()
+	var pJSON []byte
+	if shrinked == false {
+		pJSON, _ = pExt.MarshalJSON()
+	} else {
+		pJSON, _ = pShr.MarshalJSON()
+	}
 
 	switch code {
 	case fasthttp.StatusOK:

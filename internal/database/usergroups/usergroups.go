@@ -3,6 +3,7 @@ package groups
 import (
 	"backend/internal/database/connection"
 	"backend/internal/models"
+	"log"
 
 	_ "log"
 
@@ -17,10 +18,11 @@ func init() {
 
 func All(cookie string, groups *models.GroupArr) (code int, message string) {
 	var id int
-	errS := database.QueryRow(`SELECT user_id FROM sessions WHERE cookie = $1`, cookie).Scan(&id);
+	errS := database.QueryRow(`SELECT user_id FROM sessions WHERE cookie = $1`, cookie).Scan(&id)
 
 	if errS != nil {
-		return 500, "Something went wrong.."
+		log.Println("database/usergroups.go: 500, " + errS.Error())
+		return 500, errS.Error()
 	}
 
 	rows, err := database.Query(`SELECT id, name, about
@@ -30,7 +32,8 @@ func All(cookie string, groups *models.GroupArr) (code int, message string) {
 								WHERE user_id = $1;`, id)
 
 	if err != nil {
-		return 500, "Something went wrong.."
+		log.Println("database/usergroups.go: 500, " + err.Error())
+		return 500, err.Error()
 	}
 
 	for rows.Next() {
@@ -46,10 +49,11 @@ func All(cookie string, groups *models.GroupArr) (code int, message string) {
 
 func About(cookie string, groupName string, groupID int32, group *models.Group) (code int, message string) {
 	var id int
-	errS := database.QueryRow(`SELECT user_id FROM sessions WHERE cookie = $1`, cookie).Scan(&id);
+	errS := database.QueryRow(`SELECT user_id FROM sessions WHERE cookie = $1`, cookie).Scan(&id)
 
 	if errS != nil {
-		return 500, "Something went wrong.."
+		log.Println("database/usergroups.go: 500, " + errS.Error())
+		return 500, errS.Error()
 	}
 
 	var err error
@@ -70,8 +74,10 @@ func About(cookie string, groupName string, groupID int32, group *models.Group) 
 	}
 
 	if err == pgx.ErrNoRows {
+		log.Println("database/usergroups.go: 404, " + err.Error())
 		return 404, "Group not found."
 	} else if err != nil {
+		log.Println("database/usergroups.go: 500, " + err.Error())
 		return 500, "Something went wrong.."
 	}
 
@@ -80,10 +86,11 @@ func About(cookie string, groupName string, groupID int32, group *models.Group) 
 
 func Add(cookie string, groupName string, groupID int32, groups *models.GroupArr) (code int, message string) {
 	var id int
-	errS := database.QueryRow(`SELECT user_id FROM sessions WHERE cookie = $1`, cookie).Scan(&id);
+	errS := database.QueryRow(`SELECT user_id FROM sessions WHERE cookie = $1`, cookie).Scan(&id)
 
 	if errS != nil {
-		return 500, "Something went wrong.."
+		log.Println("database/usergroups.go: 500, " + errS.Error())
+		return 500, errS.Error()
 	}
 
 	var err error
@@ -96,12 +103,15 @@ func Add(cookie string, groupName string, groupID int32, groups *models.GroupArr
 	if err != nil {
 		pgErr := err.(pgx.PgError)
 		if pgErr.Code == "23505" {
+			log.Println("database/usergroups.go: 409, " + err.Error())
 			return 409, "This user is already in this group."
 		}
 		if pgErr.Code == "23503" {
+			log.Println("database/usergroups.go: 404, " + err.Error())
 			return 404, "This group doesn't exist."
 		}
-		return 500, "Something went wrong.."
+		log.Println("database/usergroups.go: 500, " + err.Error())
+		return 500, err.Error()
 	}
 
 	return All(cookie, groups)
@@ -109,10 +119,11 @@ func Add(cookie string, groupName string, groupID int32, groups *models.GroupArr
 
 func Delete(cookie string, groupName string, groupID int32, groups *models.GroupArr) (code int, message string) {
 	var id int
-	errS := database.QueryRow(`SELECT user_id FROM sessions WHERE cookie = $1`, cookie).Scan(&id);
+	errS := database.QueryRow(`SELECT user_id FROM sessions WHERE cookie = $1`, cookie).Scan(&id)
 
 	if errS != nil {
-		return 500, "Something went wrong.."
+		log.Println("database/usergroups.go: 500, " + errS.Error())
+		return 500, errS.Error()
 	}
 
 	var err error
@@ -123,7 +134,8 @@ func Delete(cookie string, groupName string, groupID int32, groups *models.Group
 	}
 
 	if err != nil {
-		return 500, "Something went wrong.."
+		log.Println("database/usergroups.go: 500, " + err.Error())
+		return 500, err.Error()
 	}
 
 	return All(cookie, groups)

@@ -14,6 +14,7 @@ func Auth(next fasthttp.RequestHandler) fasthttp.RequestHandler {
 		if string(cookie) == "" {
 			ctx.Response.SetStatusCode(fasthttp.StatusUnauthorized)
 			ctx.SetBody([]byte("{\"message\":\"User not authorized.\"}"))
+			log.Println("middleware.go: 401, unauthorized.")
 			return
 		}
 

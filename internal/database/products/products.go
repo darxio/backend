@@ -4,6 +4,8 @@ import (
 	"backend/internal/database/connection"
 	"backend/internal/models"
 
+	"log"
+
 	"github.com/jackc/pgx"
 )
 
@@ -13,16 +15,29 @@ func init() {
 	database = connection.Connect()
 }
 
-func All(products *models.ProductArr) (code int, message string) {
-	rows, err := database.Query(`SELECT barcode, name FROM products`)
+func All(products *models.ProductExtendedArr) (code int, message string) {
+	rows, err := database.Query(`
+	SELECT
+	barcode,
+	name,
+	description,
+    contents,
+    category_url,
+    mass,
+    bestbefore,
+    nutrition,
+    manufacturer,
+	image
+	FROM products_extended`)
 
 	if err != nil {
-		return 500, "Something went wrong.."
+		log.Println("database/products.go: 500, " + err.Error())
+		return 500, err.Error()
 	}
 
 	for rows.Next() {
-		product := models.Product{}
-		rows.Scan(&product.Barcode, &product.Name)
+		product := models.ProductExtended{}
+		rows.Scan(&product.Barcode, &product.Name, &product.Description, &product.Contents, &product.CategoryURL, &product.Mass, &product.BestBefore, &product.Nutrition, &product.Manufacturer, &product.Image)
 		*products = append(*products, &product)
 	}
 	rows.Close()
@@ -30,21 +45,40 @@ func All(products *models.ProductArr) (code int, message string) {
 	return 200, "Successful."
 }
 
-func GetOneBarcode(barcode int64, product *models.Product) (code int, message string) {
-	err := database.QueryRow(`SELECT p.barcode, p.name, array_agg(COALESCE(ingr.name::TEXT,'')) AS ingredients, array_agg(COALESCE(ingr.type::TEXT,'')) AS ingredient_types
-	FROM products p
-	FULL OUTER JOIN product_ingredients i
-	ON p.barcode = i.product_barcode
-	FULL OUTER JOIN ingredients ingr
-	ON i.ingredient_id = ingr.id
-	WHERE p.barcode=$1
-	GROUP BY p.barcode;`, barcode).Scan(&product.Barcode, &product.Name, &product.IngredientsList, &product.IngredientTypes)
+func GetOneBarcode(barcode int64, productExt *models.ProductExtended, productShr *models.ProductShrinked, shrinked bool) (code int, message string) {
+	err := database.QueryRow(`
+	SELECT
+	barcode,
+	name,
+	description,
+    contents,
+    category_url,
+    mass,
+    bestbefore,
+    nutrition,
+    manufacturer,
+	image
+	FROM products_extended
+	WHERE barcode = $1;`, barcode).Scan(&productExt.Barcode, &productExt.Name, &productExt.Description, &productExt.Contents, &productExt.CategoryURL, &productExt.Mass, &productExt.BestBefore, &productExt.Nutrition, &productExt.Manufacturer, &productExt.Image)
 
 	if err == pgx.ErrNoRows {
-		return 404, "Product not found."
+		errSelect := database.QueryRow(`SELECT barcode, name FROM products WHERE barcode = $1;`, barcode).Scan(&productShr.Barcode, &productShr.Name)
+
+		if errSelect != nil {
+			if errSelect == pgx.ErrNoRows {
+				log.Println("database/products.go: 404, " + err.Error())
+				return 404, "Product not found."
+			}
+			log.Println("database/products.go: 500, " + err.Error())
+			return 500, err.Error()
+		}
+
+		shrinked = true
+		return 200, "Successful."
+
 	} else if err != nil {
-		return 500, "Something went wrong.."
-		println(err.Error())
+		log.Println("database/products.go: 500, " + err.Error())
+		return 500, err.Error()
 	}
 
 	return 200, "Successful."

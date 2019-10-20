@@ -16,14 +16,9 @@ func StatusCheck(ctx *fasthttp.RequestCtx) {
 
 func Users_SignUp(ctx *fasthttp.RequestCtx) {
 	log.Println("Sign Up: " + string(ctx.Method()) + " " + string(ctx.Path()) + " " + string(ctx.PostBody()))
-	u := &models.User{}
+	u := models.User{}
 	u.UnmarshalJSON(ctx.PostBody())
-	code, cookie, message := user.SignUp(u.Username, u.Password)
-
-	log.Println("Sign Up cookie: " + cookie)
-	m := &models.Msg{}
-	m.Message = message
-	mJSON, _ := m.MarshalJSON()
+	code, cookie, message := user.SignUp(&u)
 
 	cook := &fasthttp.Cookie{}
 	cook.SetKey("session")
@@ -33,18 +28,28 @@ func Users_SignUp(ctx *fasthttp.RequestCtx) {
 	case fasthttp.StatusCreated:
 		ctx.Response.Header.SetCookie(cook)
 		ctx.SetStatusCode(fasthttp.StatusCreated)
-		ctx.SetBody(mJSON)
+		uJSON, _ := u.MarshalJSON()
+		ctx.SetBody(uJSON)
 	case fasthttp.StatusBadRequest:
 		ctx.Response.Header.SetCookie(cook)
 		ctx.SetStatusCode(fasthttp.StatusBadRequest)
+		m := &models.Msg{}
+		m.Message = message
+		mJSON, _ := m.MarshalJSON()
 		ctx.SetBody(mJSON)
 	case fasthttp.StatusConflict:
 		ctx.Response.Header.SetCookie(cook)
 		ctx.SetStatusCode(fasthttp.StatusConflict)
+		m := &models.Msg{}
+		m.Message = message
+		mJSON, _ := m.MarshalJSON()
 		ctx.SetBody(mJSON)
 	case fasthttp.StatusInternalServerError:
 		ctx.Response.Header.SetCookie(cook)
 		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+		m := &models.Msg{}
+		m.Message = message
+		mJSON, _ := m.MarshalJSON()
 		ctx.SetBody(mJSON)
 	}
 
@@ -53,37 +58,42 @@ func Users_SignUp(ctx *fasthttp.RequestCtx) {
 
 func Session_SignIn(ctx *fasthttp.RequestCtx) {
 	log.Println("Sign In: " + string(ctx.Method()) + " " + string(ctx.Path()) + " " + string(ctx.PostBody()))
-	u := &models.User{}
+	u := models.User{}
 	u.UnmarshalJSON(ctx.PostBody())
 
-	code, cookie, message := user.SignIn(u.Username, u.Password)
-
-	m := &models.Msg{}
-	m.Message = message
-	mJSON, _ := m.MarshalJSON()
+	code, cookie, message := user.SignIn(&u)
 
 	cook := &fasthttp.Cookie{}
 	cook.SetKey("session")
 	cook.SetValue(cookie)
 
-	log.Println("Sign In cookie: " + cookie)
-
 	switch code {
 	case fasthttp.StatusOK:
 		ctx.Response.Header.SetCookie(cook)
 		ctx.SetStatusCode(fasthttp.StatusOK)
-		ctx.SetBody(mJSON)
+		uJSON, _ := u.MarshalJSON()
+		ctx.SetBody(uJSON)
+		ctx.SetBody(uJSON)
 	case fasthttp.StatusBadRequest:
 		ctx.Response.Header.SetCookie(cook)
 		ctx.SetStatusCode(fasthttp.StatusBadRequest)
+		m := &models.Msg{}
+		m.Message = message
+		mJSON, _ := m.MarshalJSON()
 		ctx.SetBody(mJSON)
 	case fasthttp.StatusNotFound:
 		ctx.Response.Header.SetCookie(cook)
 		ctx.SetStatusCode(fasthttp.StatusNotFound)
+		m := &models.Msg{}
+		m.Message = message
+		mJSON, _ := m.MarshalJSON()
 		ctx.SetBody(mJSON)
 	case fasthttp.StatusInternalServerError:
 		ctx.Response.Header.SetCookie(cook)
 		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+		m := &models.Msg{}
+		m.Message = message
+		mJSON, _ := m.MarshalJSON()
 		ctx.SetBody(mJSON)
 	}
 
