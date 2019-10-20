@@ -17,7 +17,7 @@ docker-compose up --build -d
 
 Method   | Path     | Body                                          | Response                               | Response Body | Requires Auth |
 -------- | -------- | --------------------------------------------- | -------------------------------------- | ----- | --- |
-POST | /users | {"username":\<string\>, "password":\<string\>} | 201 Created, 400 Bad Request (len(username or password) < 3), 409 Conflict | {"id" : \<int\>, "username":\<string\>, "password":""} or {"message":\<string\>} | - |
+POST | /users | {"username":\<string\>, "password":\<string\>} | 201 Created, 400 Bad Request (len(username or password) < 3), 409 Conflict (username already in use) | {"id" : \<int\>, "username":\<string\>, "password":""} or {"message":\<string\>} | - |
 POST | /session | {"username":\<string\>, "password":\<string\>} | 200 OK, 400 Bad Request, 404 Not Found | {"id" : \<int\>, "username":\<string\>, "password":""} or {"message":\<string\>} | - |
 DELETE | /session | | 200 OK, 401 Unauthorized | {"message":\<string\>} | + |
  | | | | | |
