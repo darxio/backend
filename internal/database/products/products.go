@@ -45,7 +45,7 @@ func All(products *models.ProductExtendedArr) (code int, message string) {
 	return 200, "Successful."
 }
 
-func GetOneBarcode(barcode int64, productExt *models.ProductExtended, productShr *models.ProductShrinked, shrinked bool) (code int, message string) {
+func GetOneBarcode(barcode int64, productExt *models.ProductExtended, productShr *models.ProductShrinked, shrinked *bool) (code int, message string) {
 	err := database.QueryRow(`
 	SELECT
 	barcode,
@@ -61,7 +61,6 @@ func GetOneBarcode(barcode int64, productExt *models.ProductExtended, productShr
 	FROM products_extended
 	WHERE barcode = $1;`, barcode).Scan(&productExt.Barcode, &productExt.Name, &productExt.Description, &productExt.Contents, &productExt.CategoryURL, &productExt.Mass, &productExt.BestBefore, &productExt.Nutrition, &productExt.Manufacturer, &productExt.Image)
 
-	log.Println(err)
 	if err == pgx.ErrNoRows {
 		errSelect := database.QueryRow(`SELECT barcode, name FROM products WHERE barcode = $1;`, barcode).Scan(&productShr.Barcode, &productShr.Name)
 
@@ -74,7 +73,7 @@ func GetOneBarcode(barcode int64, productExt *models.ProductExtended, productShr
 			return 500, err.Error()
 		}
 
-		shrinked = true
+		*shrinked = true
 		return 200, "Successful."
 
 	} else if err != nil {

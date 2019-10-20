@@ -39,10 +39,9 @@ func Product_GetOneBarcode(ctx *fasthttp.RequestCtx) {
 	pExt := &models.ProductExtended{}
 	pShr := &models.ProductShrinked{}
 	shrinked := false
-	code, message := products.GetOneBarcode(barcode, pExt, pShr, shrinked)
+	code, message := products.GetOneBarcode(barcode, pExt, pShr, &shrinked)
 
 	var pJSON []byte
-	log.Println(shrinked)
 	if shrinked == false {
 		pJSON, _ = pExt.MarshalJSON()
 	} else {
