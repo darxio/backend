@@ -75,7 +75,6 @@ func GetOneBarcode(barcode int64, productExt *models.ProductExtended, productShr
 		}
 
 		shrinked = true
-		log.Println()
 		return 200, "Successful."
 
 	} else if err != nil {
