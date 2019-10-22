@@ -4,7 +4,7 @@ import (
 	"backend/internal/database/connection"
 	"backend/internal/models"
 	"log"
-	"strings"
+	"strconv"
 
 	"github.com/jackc/pgx"
 )
@@ -67,7 +67,7 @@ func GetOneBarcode(barcode int64, productExt *models.ProductExtended,
 		&productExt.BestBefore, &productExt.Nutrition,
 		&productExt.Manufacturer, &productExt.Image)
 
-	productExt.Image = "http://www.goodsmatrix.ru/BigImages/" + strings.Split(productExt.Image, "/")[2]
+	productExt.Image = "http://www.goodsmatrix.ru/BigImages/" + strconv.FormatUint(productExt.Barcode, 10) + ".jpg"
 
 	if err == pgx.ErrNoRows {
 		errSelect := database.QueryRow(`SELECT barcode, name FROM products WHERE barcode = $1;`, barcode).Scan(&productShr.Barcode, &productShr.Name)
