@@ -8,6 +8,7 @@ import (
 	"log"
 	"strconv"
 
+	"github.com/eadium/contents-analyzer/analyzer"
 	"github.com/valyala/fasthttp"
 )
 
@@ -43,6 +44,7 @@ func Product_GetOneBarcode(ctx *fasthttp.RequestCtx) {
 
 	var pJSON []byte
 	if shrinked == false {
+		pExt.Ingredients, _ = analyzer.Analyze(pExt.Contents)
 		pJSON, _ = pExt.MarshalJSON()
 	} else {
 		pJSON, _ = pShr.MarshalJSON()
