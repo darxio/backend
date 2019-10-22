@@ -34,16 +34,17 @@ type IngredientArr []*Ingredient
 
 // easyjson:json
 type ProductExtended struct {
-	Barcode      uint64 `json:"barcode"`
-	Name         string `json:"name"`
-	Description  string `json:"description"`
-	Contents     string `json:"contents"`
-	CategoryURL  string `json:"category_url"`
-	Mass         string `json:"mass"`
-	BestBefore   string `json:"best_before"`
-	Nutrition    string `json:"nutrition"`
-	Manufacturer string `json:"manufacturer"`
-	Image        string `json:"image"`
+	Barcode      uint64      `json:"barcode"`
+	Name         string      `json:"name"`
+	Description  string      `json:"description"`
+	Contents     string      `json:"contents"`
+	CategoryURL  string      `json:"category_url"`
+	Mass         string      `json:"mass"`
+	BestBefore   string      `json:"best_before"`
+	Nutrition    string      `json:"nutrition"`
+	Manufacturer string      `json:"manufacturer"`
+	Image        string      `json:"image"`
+	Ingredients  interface{} `json:"ingredients`
 }
 
 // easyjson:json

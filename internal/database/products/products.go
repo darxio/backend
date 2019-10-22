@@ -3,8 +3,8 @@ package products
 import (
 	"backend/internal/database/connection"
 	"backend/internal/models"
-
 	"log"
+	"strings"
 
 	"github.com/jackc/pgx"
 )
@@ -45,7 +45,8 @@ func All(products *models.ProductExtendedArr) (code int, message string) {
 	return 200, "Successful."
 }
 
-func GetOneBarcode(barcode int64, productExt *models.ProductExtended, productShr *models.ProductShrinked, shrinked *bool) (code int, message string) {
+func GetOneBarcode(barcode int64, productExt *models.ProductExtended,
+	productShr *models.ProductShrinked, shrinked *bool) (code int, message string) {
 	err := database.QueryRow(`
 	SELECT
 	barcode,
@@ -59,9 +60,14 @@ func GetOneBarcode(barcode int64, productExt *models.ProductExtended, productShr
     manufacturer,
 	image
 	FROM products_extended
-	WHERE barcode = $1;`, barcode).Scan(&productExt.Barcode, &productExt.Name, &productExt.Description, &productExt.Contents, &productExt.CategoryURL, &productExt.Mass, &productExt.BestBefore, &productExt.Nutrition, &productExt.Manufacturer, &productExt.Image)
+	WHERE barcode = $1;`, barcode).Scan(
+		&productExt.Barcode, &productExt.Name,
+		&productExt.Description, &productExt.Contents,
+		&productExt.CategoryURL, &productExt.Mass,
+		&productExt.BestBefore, &productExt.Nutrition,
+		&productExt.Manufacturer, &productExt.Image)
 
-	productExt.Image = "http://www.goodsmatrix.ru/" + productExt.Image
+	productExt.Image = "http://www.goodsmatrix.ru/BigImages/" + strings.Split(productExt.Image, "/")[2]
 
 	if err == pgx.ErrNoRows {
 		errSelect := database.QueryRow(`SELECT barcode, name FROM products WHERE barcode = $1;`, barcode).Scan(&productShr.Barcode, &productShr.Name)
