@@ -55,3 +55,6 @@ type ProductShrinked struct {
 
 // easyjson:json
 type ProductExtendedArr []*ProductExtended
+
+// easyjson:json
+type ProductShrinkedArr []*ProductShrinked

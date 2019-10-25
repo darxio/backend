@@ -55,7 +55,8 @@ func main() {
 	r.DELETE("/user/ingredients/:name_or_id", api.User_DeleteExcludedIngredient)
 
 	// r.GET("/products", api.Product_All)
-	r.GET("/products/:barcode", api.Product_GetOneBarcode)
+	r.GET("/products/barcode/:barcode", api.Product_GetOneBarcode)
+	r.GET("/products/name/:name", api.Product_GetManyByName)
 
 	log.Println("Listening on http://localhost:8888...")
 	multiWriter := io.MultiWriter(os.Stdout, logFile)
