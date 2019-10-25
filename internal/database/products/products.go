@@ -107,7 +107,8 @@ func GetManyByName(name string, productExt *models.ProductExtendedArr,
     manufacturer,
 	image
 	FROM products_extended
-	WHERE name like '%' || $1 || '%';`, name)
+	WHERE name like '%' || $1 || '%' AND category_url LIKE '%Товары/Продукты питания%'
+	LIMIT 10 ;`, name)
 	if err == nil && res.Err() == nil {
 		for res.Next() {
 			curProd := models.ProductExtended{}

@@ -70,7 +70,7 @@ func Product_GetOneBarcode(ctx *fasthttp.RequestCtx) {
 }
 
 func Product_GetManyByName(ctx *fasthttp.RequestCtx) {
-	log.Println("Product GetOneByName: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
+	log.Println("Product GetManyByName: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
 	name, _ := ctx.UserValue("name").(string)
 
 	pExt := models.ProductExtendedArr{}
