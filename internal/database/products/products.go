@@ -91,3 +91,64 @@ func GetOneBarcode(barcode int64, productExt *models.ProductExtended,
 
 	return 200, "Successful."
 }
+
+func GetManyByName(name string, productExt *models.ProductExtendedArr,
+	productShr *models.ProductShrinkedArr, shrinked *bool) (code int, message string) {
+	res, err := database.Query(`
+	SELECT
+	barcode,
+	name,
+	description,
+    contents,
+    category_url,
+    mass,
+    bestbefore,
+    nutrition,
+    manufacturer,
+	image
+	FROM products_extended
+	WHERE name like '%' || $1 || '%';`, name)
+	if err == nil && res.Err() == nil {
+		for res.Next() {
+			curProd := models.ProductExtended{}
+			res.Scan(
+				&curProd.Barcode, &curProd.Name,
+				&curProd.Description, &curProd.Contents,
+				&curProd.CategoryURL, &curProd.Mass,
+				&curProd.BestBefore, &curProd.Nutrition,
+				&curProd.Manufacturer, &curProd.Image)
+			curProd.Image = "http://www.goodsmatrix.ru/BigImages/" + strconv.FormatUint(curProd.Barcode, 10) + ".jpg"
+			*productExt = append(*productExt, &curProd)
+		}
+
+	} else if err == pgx.ErrNoRows {
+		rows, errSelect := database.Query(`SELECT barcode, name FROM products WHERE name like '%'|| $1 ||'%';`, name)
+
+		if errSelect == nil && rows.Err() == nil {
+			for rows.Next() {
+				curProd := models.ProductShrinked{}
+				rows.Scan(&curProd.Barcode, &curProd.Name)
+				*productShr = append(*productShr, &curProd)
+			}
+		}
+
+		if errSelect != nil {
+			if errSelect == pgx.ErrNoRows {
+				log.Println("database/products.go: 404, " + err.Error())
+				return 404, "Product not found."
+			}
+			log.Println("database/products.go (shrinked): 500, " + err.Error())
+			return 500, err.Error()
+		}
+
+		*shrinked = true
+
+		return 200, "Successful."
+
+	} else if err != nil {
+		log.Println("database/products.go: 500, " + err.Error())
+		return 500, err.Error()
+	}
+
+	return 200, "Successful."
+}

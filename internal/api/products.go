@@ -68,3 +68,41 @@ func Product_GetOneBarcode(ctx *fasthttp.RequestCtx) {
 		ctx.SetBody(mJSON)
 	}
 }
+
+func Product_GetManyByName(ctx *fasthttp.RequestCtx) {
+	log.Println("Product GetOneByName: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
+	name, _ := ctx.UserValue("name").(string)
+
+	pExt := models.ProductExtendedArr{}
+	pShr := models.ProductShrinkedArr{}
+	shrinked := false
+	code, message := products.GetManyByName(name, &pExt, &pShr, &shrinked)
+
+	var pJSON []byte
+	if shrinked == false {
+		for _, v := range pExt {
+			v.Ingredients, _ = analyzer.Analyze(v.Contents)
+		}
+		pJSON, _ = pExt.MarshalJSON()
+	} else {
+		pJSON, _ = pShr.MarshalJSON()
+	}
+
+	switch code {
+	case fasthttp.StatusOK:
+		ctx.SetStatusCode(fasthttp.StatusOK)
+		ctx.SetBody(pJSON)
+	case fasthttp.StatusNotFound:
+		ctx.SetStatusCode(fasthttp.StatusNotFound)
+		m := &models.Msg{}
+		m.Message = message
+		mJSON, _ := m.MarshalJSON()
+		ctx.SetBody(mJSON)
+	case fasthttp.StatusInternalServerError:
+		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+		m := &models.Msg{}
+		m.Message = message
+		mJSON, _ := m.MarshalJSON()
+		ctx.SetBody(mJSON)
+	}
+}

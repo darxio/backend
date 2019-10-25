@@ -3,7 +3,7 @@ module backend
 go 1.12
 
 require (
-	github.com/buaazp/fasthttprouter v0.1.1 // indirect
+	github.com/buaazp/fasthttprouter v0.1.1
 	github.com/corpix/uarand v0.1.1 // indirect
 	github.com/eadium/contents-analyzer v0.0.0-20191022110903-1764f59c8225
 	github.com/icrowley/fake v0.0.0-20180203215853-4178557ae428
