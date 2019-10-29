@@ -8,7 +8,8 @@ import (
 	"log"
 	"strconv"
 
-	"github.com/eadium/contents-analyzer/analyzer"
+	"backend/internal/contents-analyzer/analyzer"
+
 	"github.com/valyala/fasthttp"
 )
 

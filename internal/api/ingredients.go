@@ -9,6 +9,8 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
+/*
+
 func Ingredients_All(ctx *fasthttp.RequestCtx) {
 	log.Println("Ingredients All: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
 
@@ -30,6 +32,28 @@ func Ingredients_All(ctx *fasthttp.RequestCtx) {
 	}
 }
 
+func Ingredients_All(ctx *fasthttp.RequestCtx) {
+	log.Println("Ingredients All: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
+
+	ingredients_ := make(models.IngredientArr, 0, common.Limit)
+	code, message := ingredients.All(&ingredients_)
+
+	ingredientsJSON, _ := ingredients_.MarshalJSON()
+
+	switch code {
+	case fasthttp.StatusOK:
+		ctx.SetStatusCode(fasthttp.StatusOK)
+		ctx.SetBody(ingredientsJSON)
+	case fasthttp.StatusInternalServerError:
+		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+		m := &models.Msg{}
+		m.Message = message
+		mJSON, _ := m.MarshalJSON()
+		ctx.SetBody(mJSON)
+	}
+}
+*/
+
 func Ingredients_About(ctx *fasthttp.RequestCtx) {
 	log.Println("Ingredients About: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
 	ingredientName, ingredientID := common.NameOrID(ctx)
@@ -42,6 +66,36 @@ func Ingredients_About(ctx *fasthttp.RequestCtx) {
 	} else {
 		code, message = ingredients.About(ingredientName, 0, i)
 	}
+
+	iJSON, _ := i.MarshalJSON()
+
+	switch code {
+	case fasthttp.StatusOK:
+		ctx.SetStatusCode(fasthttp.StatusOK)
+		ctx.SetBody(iJSON)
+	case fasthttp.StatusNotFound:
+		ctx.SetStatusCode(fasthttp.StatusNotFound)
+		m := &models.Msg{}
+		m.Message = message
+		mJSON, _ := m.MarshalJSON()
+		ctx.SetBody(mJSON)
+	case fasthttp.StatusInternalServerError:
+		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+		m := &models.Msg{}
+		m.Message = message
+		mJSON, _ := m.MarshalJSON()
+		ctx.SetBody(mJSON)
+	}
+}
+
+func Ingredients_Search(ctx *fasthttp.RequestCtx) {
+	log.Println("Ingredients Search: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
+	ingredientName, _ := common.NameOrID(ctx)
+
+	var code int
+	var message string
+	i := &models.Ingredient{}
+	code, message = ingredients.Search(ingredientName, i)
 
 	iJSON, _ := i.MarshalJSON()
 

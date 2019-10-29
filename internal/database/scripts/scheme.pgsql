@@ -33,7 +33,7 @@ CREATE TABLE sessions (
 CREATE TABLE groups (
   id       BIGSERIAL      PRIMARY KEY,
   name     CITEXT         NOT NULL UNIQUE,
-  about    TEXT           NOT NULL DEFAULT ''
+  about    TEXT           NOT NULL DEFAULT 'NULL'
 );
 
 CREATE TABLE user_groups (
@@ -47,10 +47,17 @@ CREATE TABLE user_groups (
 -- ingredients
 -------------------------------------------
 
-CREATE TABLE ingredients (
-  id       BIGSERIAL      PRIMARY KEY,
-  name     CITEXT         NOT NULL UNIQUE,
-  type     TEXT           NOT NULL DEFAULT ''
+create table ingredients(
+    id          SERIAL         PRIMARY KEY,
+    name        CITEXT         NOT NULL,
+    key         TEXT           UNIQUE NOT NULL,
+    frequency   INT            DEFAULT 1, 
+    danger      INT            DEFAULT -1,
+    description TEXT           DEFAULT 'NULL',
+    synonyms    TEXT           DEFAULT 'NULL',
+    groups       INT[]         DEFAULT array[]::integer[]
+
+    CREATE INDEX ON ingredients(name);
 );
 
 CREATE TABLE group_ingredient_types (
@@ -78,17 +85,17 @@ CREATE TABLE products (
 );
 
 CREATE TABLE IF NOT EXISTS products_extended(
-  barcode bigint primary key,
-  name text,
-  description text,
-  contents text,
-  category_url text,
-  mass text,
-  bestbefore text,
-  nutrition text,
-  manufacturer text,
-  image text
-    );
+  barcode BIGINT PRIMARY KEY,
+  name TEXT,
+  description TEXT,
+  contents TEXT,
+  category_url TEXT,
+  mass TEXT,
+  bestbefore TEXT,
+  nutrition TEXT,
+  manufacturer TEXT,
+  image TEXT
+);
 
 CREATE TABLE product_ingredients (
   product_barcode      BIGINT    REFERENCES products(barcode),

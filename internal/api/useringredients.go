@@ -1,5 +1,6 @@
 package api
 
+/*
 import (
 	"backend/internal/common"
 	"backend/internal/database/useringredients"
@@ -104,3 +105,4 @@ func User_DeleteExcludedIngredient(ctx *fasthttp.RequestCtx) {
 			ctx.SetBody(mJSON)
 		}
 }
+*/

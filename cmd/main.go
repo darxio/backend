@@ -9,7 +9,6 @@ import (
 	"github.com/valyala/fasthttp"
 
 	"backend/internal/api"
-	mw "backend/internal/middleware"
 )
 
 func main() {
@@ -30,33 +29,34 @@ func main() {
 
 	// Authorization
 	r.GET("/", api.StatusCheck)
-	r.POST("/users", api.Users_SignUp)
-	r.POST("/session", api.Session_SignIn)
-	r.DELETE("/session", mw.Auth(api.Session_SignOut))
+	// r.POST("/users", api.Users_SignUp)
+	// r.POST("/session", api.Session_SignIn)
+	// r.DELETE("/session", mw.Auth(api.Session_SignOut))
 
 	// Personalization
-	r.GET("/user/groups", mw.Auth(api.User_AllGroups))
-	r.GET("/user/groups/:name_or_id", mw.Auth(api.User_AboutGroup))
-	r.POST("/user/groups/:name_or_id/add", mw.Auth(api.User_AddGroup))
-	r.DELETE("/user/groups/:name_or_id", mw.Auth(api.User_DeleteGroup))
+	// r.GET("/user/groups", mw.Auth(api.User_AllGroups))
+	// r.GET("/user/groups/:name_or_id", mw.Auth(api.User_AboutGroup))
+	// r.POST("/user/groups/:name_or_id/add", mw.Auth(api.User_AddGroup))
+	// r.DELETE("/user/groups/:name_or_id", mw.Auth(api.User_DeleteGroup))
 
 	// Data
 	r.GET("/groups", api.Groups_All)
 	r.GET("/groups/:name_or_id", api.Groups_About)
 
 	// Ingredients
-	r.GET("/ingredients", api.Ingredients_All)
-	r.GET("/ingredients/:name_or_id", api.Ingredients_About)
-	r.GET("/ingredients/:name_or_id/groups/", api.Ingredients_GroupAll)
+	// r.GET("/ingredients", api.Ingredients_All)
+	r.GET("/ingredients/name/:name_or_id/", api.Ingredients_About)
+	r.GET("/ingredients/search/:name_or_id/", api.Ingredients_Search)
+	r.GET("/ingredients/groups/:name_or_id/", api.Ingredients_GroupAll)
 
 	// Excluded ingredients
-	r.GET("/user/ingredients", api.User_AllExcludedIngredient)
-	r.POST("/user/ingredients/:name_or_id", api.User_AddExcludedIngredient)
-	r.DELETE("/user/ingredients/:name_or_id", api.User_DeleteExcludedIngredient)
+	// r.GET("/user/ingredients", api.User_AllExcludedIngredient)
+	// r.POST("/user/ingredients/:name_or_id", api.User_AddExcludedIngredient)
+	// r.DELETE("/user/ingredients/:name_or_id", api.User_DeleteExcludedIngredient)
 
 	// r.GET("/products", api.Product_All)
 	r.GET("/products/barcode/:barcode", api.Product_GetOneBarcode)
-	r.GET("/products/name/:name", api.Product_GetManyByName)
+	r.GET("/products/search/:name", api.Product_GetManyByName)
 
 	log.Println("Listening on http://localhost:8888...")
 	multiWriter := io.MultiWriter(os.Stdout, logFile)

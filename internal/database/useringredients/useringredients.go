@@ -1,5 +1,7 @@
 package useringredients
 
+/*
+
 import (
 	"backend/internal/database/connection"
 	"backend/internal/models"
@@ -101,3 +103,4 @@ func DeleteExcludedIngredient(cookie string, ingredientName string, ingredientID
 
 	return AllExcludedIngredients(cookie, ingredients)
 }
+*/

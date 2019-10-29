@@ -289,7 +289,7 @@ func easyjsonD2b7633eDecodeBackendInternalModels3(in *jlexer.Lexer, out *Product
 			out.Manufacturer = string(in.String())
 		case "image":
 			out.Image = string(in.String())
-		case "Ingredients":
+		case "ingredients":
 			if m, ok := out.Ingredients.(easyjson.Unmarshaler); ok {
 				m.UnmarshalEasyJSON(in)
 			} else if m, ok := out.Ingredients.(json.Unmarshaler); ok {
@@ -362,7 +362,7 @@ func easyjsonD2b7633eEncodeBackendInternalModels3(out *jwriter.Writer, in Produc
 		out.String(string(in.Image))
 	}
 	{
-		const prefix string = ",\"Ingredients\":"
+		const prefix string = ",\"ingredients\":"
 		out.RawString(prefix)
 		if m, ok := in.Ingredients.(easyjson.Marshaler); ok {
 			m.MarshalEasyJSON(out)
@@ -501,8 +501,12 @@ func easyjsonD2b7633eDecodeBackendInternalModels5(in *jlexer.Lexer, out *Ingredi
 			out.ID = int32(in.Int32())
 		case "name":
 			out.Name = string(in.String())
-		case "type":
-			out.Type = string(in.String())
+		case "danger":
+			out.Danger = int(in.Int())
+		case "description":
+			out.Description = string(in.String())
+		case "wiki_link":
+			out.WikiLink = string(in.String())
 		default:
 			in.SkipRecursive()
 		}
@@ -528,9 +532,19 @@ func easyjsonD2b7633eEncodeBackendInternalModels5(out *jwriter.Writer, in Ingred
 		out.String(string(in.Name))
 	}
 	{
-		const prefix string = ",\"type\":"
+		const prefix string = ",\"danger\":"
 		out.RawString(prefix)
-		out.String(string(in.Type))
+		out.Int(int(in.Danger))
+	}
+	{
+		const prefix string = ",\"description\":"
+		out.RawString(prefix)
+		out.String(string(in.Description))
+	}
+	{
+		const prefix string = ",\"wiki_link\":"
+		out.RawString(prefix)
+		out.String(string(in.WikiLink))
 	}
 	out.RawByte('}')
 }

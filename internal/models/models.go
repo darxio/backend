@@ -24,9 +24,13 @@ type GroupArr []*Group
 
 // easyjson:json
 type Ingredient struct {
-	ID   int32  `json:"id"`
-	Name string `json:"name"`
-	Type string `json:"type"`
+	ID          int32  `json:"id"`
+	Name        string `json:"name"`
+	Danger      int    `json:"danger"`
+	Description string `json:"description"`
+	WikiLink    string `json:"wiki_link"`
+	// Type string `json:"type"`
+
 }
 
 // easyjson:json
@@ -44,7 +48,7 @@ type ProductExtended struct {
 	Nutrition    string      `json:"nutrition"`
 	Manufacturer string      `json:"manufacturer"`
 	Image        string      `json:"image"`
-	Ingredients  interface{} `json:"ingredients`
+	Ingredients  interface{} `json:"ingredients"`
 }
 
 // easyjson:json
