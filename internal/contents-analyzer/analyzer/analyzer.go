@@ -129,7 +129,7 @@ func findClosingParen(text []string, openPos int) int {
 func getDangerLevel(ing string) int {
 	var danger int
 	err := database.QueryRow(
-		`SELECT danger FROM ingredients WHERE name LIKE $1 LIMIT 1
+		`SELECT danger FROM ingredients WHERE name = $1 LIMIT 1
 	`, ing).Scan(&danger)
 	if err != nil {
 		// log.Println("ERROR analyzer.go:132: getDangerLevel()", err.Error())
