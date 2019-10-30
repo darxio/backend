@@ -94,10 +94,10 @@ func Ingredients_Search(ctx *fasthttp.RequestCtx) {
 
 	var code int
 	var message string
-	i := &models.Ingredient{}
-	code, message = ingredients.Search(ingredientName, i)
+	ings := models.IngredientArr{}
+	code, message = ingredients.Search(ingredientName, &ings)
 
-	iJSON, _ := i.MarshalJSON()
+	iJSON, _ := ings.MarshalJSON()
 
 	switch code {
 	case fasthttp.StatusOK:

@@ -55,20 +55,25 @@ func About(ingredientName string, ingredientID int32, ingredient *models.Ingredi
 	return 200, "Successful."
 }
 
-func Search(ingredientName string, ingredient *models.Ingredient) (code int, message string) {
-	var err error
-	err = database.QueryRow(`
+func Search(ingredientName string, ingredients *models.IngredientArr) (code int, message string) {
+	rows, err := database.Query(`
 		SELECT id, name, danger, description, wiki_link 
 			FROM ingredients WHERE name LIKE '%' || $1 || '%' 
 				ORDER BY danger DESC, description LIMIT 10
-				`, ingredientName).Scan(
-		&ingredient.ID, &ingredient.Name, &ingredient.Danger,
-		&ingredient.Description, &ingredient.WikiLink)
+				`, ingredientName)
 
 	if err == pgx.ErrNoRows {
 		return 404, "Ingredient not found."
 	} else if err != nil {
 		return 500, err.Error()
+	}
+
+	for rows.Next() {
+		curIng := models.Ingredient{}
+		rows.Scan(
+			&curIng.ID, &curIng.Name, &curIng.Danger,
+			&curIng.Description, &curIng.WikiLink)
+		*ingredients = append(*ingredients, &curIng)
 	}
 
 	return 200, "Successful."
