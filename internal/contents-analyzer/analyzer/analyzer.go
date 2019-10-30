@@ -131,8 +131,8 @@ func getDangerLevel(ing string) int {
 	err := database.QueryRow(
 		`SELECT DISTINCT danger FROM ingredients WHERE name LIKE $1
 	`, ing).Scan(&danger)
-	if err != nil {
-		log.Println("ERROR analyzer.go:132: getDangerLevel(string) return non-nil err")
+	if err != nil && err != pgx.ErrNoRows {
+		log.Println("ERROR analyzer.go:132: getDangerLevel()", err.Error())
 		return -1
 	}
 	return danger
