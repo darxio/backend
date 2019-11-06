@@ -30,6 +30,26 @@ func init() {
 	return 200, "Successful."
 } */
 
+func All(ingredients *models.IngredientArr) (code int, message string) {
+	rows, err := database.Query(`
+			SELECT id, name, danger, description, wiki_link
+				FROM ingredients;`)
+
+	if err != nil {
+		return 500, "Something went wrong.."
+	}
+
+	for rows.Next() {
+		ingredient := models.Ingredient{}
+		rows.Scan(&ingredient.ID, &ingredient.Name, &ingredient.Danger,
+			&ingredient.Description, &ingredient.WikiLink)
+		*ingredients = append(*ingredients, &ingredient)
+	}
+	rows.Close()
+
+	return 200, "Successful."
+}
+
 func About(ingredientName string, ingredientID int32, ingredient *models.Ingredient) (code int, message string) {
 	var err error
 	if ingredientID != 0 {
