@@ -20,6 +20,7 @@ func init() {
 
 type Ingredient struct {
 	Name        string        `json:"name"`
+	ID          int           `json:"id"`
 	Danger      int           `json:"danger"`
 	Ingredients *[]Ingredient `json:"ingredients"`
 	// Description string        `json:"description"`
@@ -82,8 +83,11 @@ func parse(letters []string, ings *[]Ingredient) error {
 				}
 			}
 			curWord = strings.TrimSpace(bracketsReg.ReplaceAllString(curWord, ""))
-			danger := getDangerLevel(curWord)
-			*ings = append(*ings, Ingredient{curWord, danger, nil})
+			danger, id, e := getDangerLevel(curWord)
+			if e != nil {
+				return err
+			}
+			*ings = append(*ings, Ingredient{curWord, id, danger, nil})
 			curWord = ""
 			continue
 		}
@@ -97,8 +101,11 @@ func parse(letters []string, ings *[]Ingredient) error {
 				return err
 			}
 			curWord = strings.TrimSpace(bracketsReg.ReplaceAllString(curWord, ""))
-			danger := getDangerLevel(curWord)
-			*ings = append(*ings, Ingredient{curWord, danger, &subIngs})
+			danger, id, e := getDangerLevel(curWord)
+			if e != nil {
+				return err
+			}
+			*ings = append(*ings, Ingredient{curWord, id, danger, &subIngs})
 			if i < len(letters)-1 {
 				i = closePos - 1
 			} else {
@@ -126,14 +133,14 @@ func findClosingParen(text []string, openPos int) int {
 	return closePos
 }
 
-func getDangerLevel(ing string) int {
-	var danger int
+func getDangerLevel(ing string) (int, int, error) {
+	var danger, id int
 	err := database.QueryRow(
-		`SELECT danger FROM ingredients WHERE name = $1 LIMIT 1
-	`, ing).Scan(&danger)
+		`SELECT id, danger FROM ingredients WHERE name = $1 LIMIT 1
+	`, ing).Scan(&id, &danger)
 	if err != nil {
 		// log.Println("ERROR analyzer.go:132: getDangerLevel()", err.Error())
-		return -1
+		return -1, -1, err
 	}
-	return danger
+	return danger, id, nil
 }

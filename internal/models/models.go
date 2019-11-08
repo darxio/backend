@@ -38,6 +38,7 @@ type IngredientArr []*Ingredient
 
 // easyjson:json
 type ProductExtended struct {
+	Shrinked     bool        `json:"shrinked"`
 	Barcode      uint64      `json:"barcode"`
 	Name         string      `json:"name"`
 	Description  string      `json:"description"`
@@ -53,8 +54,9 @@ type ProductExtended struct {
 
 // easyjson:json
 type ProductShrinked struct {
-	Barcode uint64 `json:"barcode"`
-	Name    string `json:"name"`
+	Shrinked bool   `json:"shrinked"`
+	Barcode  uint64 `json:"barcode"`
+	Name     string `json:"name"`
 }
 
 // easyjson:json

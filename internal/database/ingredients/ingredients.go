@@ -13,23 +13,7 @@ func init() {
 	database = connection.Connect()
 }
 
-/* func All(ingredients *models.IngredientArr) (code int, message string) {
-	rows, err := database.Query(`SELECT count(*)  FROM ingredients;`)
-
-	if err != nil {
-		return 500, "Something went wrong.."
-	}
-
-	for rows.Next() {
-		ingredient := models.Ingredient{}
-		rows.Scan(&ingredient.ID, &ingredient.Name, &ingredient.Type)
-		*ingredients = append(*ingredients, &ingredient)
-	}
-	rows.Close()
-
-	return 200, "Successful."
-} */
-
+/*
 func All(ingredients *models.IngredientArr) (code int, message string) {
 	rows, err := database.Query(`
 			SELECT id, name, danger, description, wiki_link
@@ -49,6 +33,7 @@ func All(ingredients *models.IngredientArr) (code int, message string) {
 
 	return 200, "Successful."
 }
+*/
 
 func About(ingredientName string, ingredientID int32, ingredient *models.Ingredient) (code int, message string) {
 	var err error
@@ -79,7 +64,7 @@ func Search(ingredientName string, ingredients *models.IngredientArr) (code int,
 	rows, err := database.Query(`
 		SELECT id, name, danger, description, wiki_link 
 			FROM ingredients WHERE name LIKE '%' || $1 || '%' 
-				ORDER BY danger DESC, description LIMIT 10
+				ORDER BY frequency DESC, danger DESC LIMIT 10
 				`, ingredientName)
 
 	if err == pgx.ErrNoRows {
