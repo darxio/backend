@@ -45,7 +45,11 @@ func Product_GetOneBarcode(ctx *fasthttp.RequestCtx) {
 
 	var pJSON []byte
 	if shrinked == false {
-		pExt.Ingredients, _ = analyzer.Analyze(pExt.Contents)
+		var err error
+		pExt.Ingredients, err = analyzer.Analyze(pExt.Contents)
+		if err != nil {
+			log.Println("Product_GetOneBarcode.Analyze: " + err.Error())
+		}
 		pJSON, _ = pExt.MarshalJSON()
 	} else {
 		pJSON, _ = pShr.MarshalJSON()
