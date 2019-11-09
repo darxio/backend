@@ -139,7 +139,7 @@ func Ingredients_Top(ctx *fasthttp.RequestCtx) {
 	var code int
 	var message string
 	ings := models.IngredientArr{}
-	code, message = ingredients.Top(offset, count, &ings)
+	code, message = ingredients.Top(count, offset, &ings)
 
 	iJSON, _ := ings.MarshalJSON()
 
