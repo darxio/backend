@@ -13,9 +13,14 @@ import (
 )
 
 var database *pgx.ConnPool
+var reg *regexp.Regexp
+var bracketsReg *regexp.Regexp
+var separatorReg *regexp.Regexp
+var recursiveReg *regexp.Regexp
 
-func init() {
-	database = connection.Connect()
+type argError struct {
+	arg  string
+	prob string
 }
 
 type Ingredient struct {
@@ -27,9 +32,25 @@ type Ingredient struct {
 	// WikiLink    string        `json:"wiki_link"`
 }
 
-type argError struct {
-	arg  string
-	prob string
+func init() {
+	var err, err1, err2, err3 error
+	database = connection.Connect()
+	reg, err = regexp.Compile("[^a-zA-Z0-9А-Яа-я[:space:]]+")
+	if err != nil {
+		log.Fatal(err)
+	}
+	bracketsReg, err1 = regexp.Compile("[)]+")
+	if err1 != nil {
+		log.Fatal(err1)
+	}
+	separatorReg, err2 = regexp.Compile("[,.:;]+")
+	if err2 != nil {
+		log.Fatal(err2)
+	}
+	recursiveReg, err3 = regexp.Compile("[(]+")
+	if err3 != nil {
+		log.Fatal(err3)
+	}
 }
 
 func (e *argError) Error() string {
@@ -56,22 +77,7 @@ func Analyze(s string) (*[]Ingredient, error) {
 
 // Parse parses
 func parse(letters []string, ings *[]Ingredient) error {
-	reg, err := regexp.Compile("[^a-zA-Z0-9А-Яа-я[:space:]]+")
-	if err != nil {
-		log.Fatal(err)
-	}
-	bracketsReg, err1 := regexp.Compile("[)]+")
-	if err1 != nil {
-		log.Fatal(err1)
-	}
-	separatorReg, err2 := regexp.Compile("[,.:;]+")
-	if err2 != nil {
-		log.Fatal(err2)
-	}
-	recursiveReg, err3 := regexp.Compile("[(]+")
-	if err3 != nil {
-		log.Fatal(err3)
-	}
+
 	curWord := ""
 	for i := 0; i < len(letters); i++ {
 		if separatorReg.MatchString(letters[i]) || i == len(letters)-1 {
@@ -85,7 +91,7 @@ func parse(letters []string, ings *[]Ingredient) error {
 			curWord = strings.TrimSpace(bracketsReg.ReplaceAllString(curWord, ""))
 			danger, id, e := getDangerLevel(curWord)
 			if e != nil {
-				return err
+				return e
 			}
 			*ings = append(*ings, Ingredient{curWord, id, danger, nil})
 			curWord = ""
@@ -139,6 +145,9 @@ func getDangerLevel(ing string) (int, int, error) {
 		`SELECT id, danger FROM ingredients WHERE name = $1 LIMIT 1
 	`, ing).Scan(&id, &danger)
 	if err != nil {
+		if err == pgx.ErrNoRows {
+			return -1, 0, nil
+		}
 		// log.Println("ERROR analyzer.go:132: getDangerLevel()", err.Error())
 		return -1, -1, err
 	}
