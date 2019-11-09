@@ -84,6 +84,30 @@ func Search(ingredientName string, ingredients *models.IngredientArr) (code int,
 	return 200, "Successful."
 }
 
+func Top(count int, offset int, ingredients *models.IngredientArr) (code int, message string) {
+	rows, err := database.Query(`
+		SELECT id, name, danger, description, wiki_link 
+			FROM ingredients 
+				ORDER BY frequency DESC, danger DESC LIMIT $1 OFFSET $2
+				`, count, offset)
+
+	if err == pgx.ErrNoRows {
+		return 404, "Ingredient not found."
+	} else if err != nil {
+		return 500, err.Error()
+	}
+
+	for rows.Next() {
+		curIng := models.Ingredient{}
+		rows.Scan(
+			&curIng.ID, &curIng.Name, &curIng.Danger,
+			&curIng.Description, &curIng.WikiLink)
+		*ingredients = append(*ingredients, &curIng)
+	}
+
+	return 200, "Successful."
+}
+
 func GroupAll(ingredientName string, ingredientID int32, ingredients *models.IngredientArr) (code int, message string) {
 
 	// if err == pgx.ErrNoRows {

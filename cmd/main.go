@@ -48,6 +48,7 @@ func main() {
 	r.GET("/ingredients/name/:name_or_id/", api.Ingredients_About)
 	r.GET("/ingredients/search/:name_or_id/", api.Ingredients_Search)
 	r.GET("/ingredients/groups/:name_or_id/", api.Ingredients_GroupAll)
+	r.GET("/ingredients/top/:count/:page", api.Ingredients_Top)
 
 	// Excluded ingredients
 	// r.GET("/user/ingredients", api.User_AllExcludedIngredient)

@@ -5,6 +5,7 @@ import (
 	"backend/internal/database/ingredients"
 	"backend/internal/models"
 	"log"
+	"strconv"
 
 	"github.com/valyala/fasthttp"
 )
@@ -96,6 +97,49 @@ func Ingredients_Search(ctx *fasthttp.RequestCtx) {
 	var message string
 	ings := models.IngredientArr{}
 	code, message = ingredients.Search(ingredientName, &ings)
+
+	iJSON, _ := ings.MarshalJSON()
+
+	switch code {
+	case fasthttp.StatusOK:
+		ctx.SetStatusCode(fasthttp.StatusOK)
+		ctx.SetBody(iJSON)
+	case fasthttp.StatusNotFound:
+		ctx.SetStatusCode(fasthttp.StatusNotFound)
+		m := &models.Msg{}
+		m.Message = message
+		mJSON, _ := m.MarshalJSON()
+		ctx.SetBody(mJSON)
+	case fasthttp.StatusInternalServerError:
+		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+		m := &models.Msg{}
+		m.Message = message
+		mJSON, _ := m.MarshalJSON()
+		ctx.SetBody(mJSON)
+	}
+}
+
+func Ingredients_Top(ctx *fasthttp.RequestCtx) {
+	log.Println("Ingredients Top: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
+	count, _ := strconv.Atoi(ctx.UserValue("count").(string))
+	page, _ := strconv.Atoi(ctx.UserValue("page").(string))
+
+	if count > 50 {
+		count = 50
+	} else if count < 1 {
+		count = 1
+	}
+	if page > 50 {
+		page = 50
+	} else if page < 0 {
+		page = 0
+	}
+
+	offset := count * page
+	var code int
+	var message string
+	ings := models.IngredientArr{}
+	code, message = ingredients.Top(offset, count, &ings)
 
 	iJSON, _ := ings.MarshalJSON()
 
