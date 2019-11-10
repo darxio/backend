@@ -4,6 +4,7 @@ import (
 	"backend/internal/database/connection"
 	"backend/internal/models"
 	"log"
+	"strconv"
 
 	"github.com/jackc/pgx"
 )
@@ -46,6 +47,32 @@ func About(groupName string, groupID int32, group *models.Group) (code int, mess
 	} else if err != nil {
 		log.Println("database/groups.go: 500, " + err.Error())
 		return 500, err.Error()
+	}
+
+	return 200, "Successful."
+}
+
+func Ingredients(groupID int, count int, offset int, ingredients *models.IngredientArr) (code int, message string) {
+	rows, err := database.Query(`
+		SELECT id, name, danger, description, wiki_link 
+			FROM ingredients WHERE id IN (
+				SELECT id FROM ing_groups WHERE groups ~* $1
+			)
+				ORDER BY frequency DESC, danger DESC LIMIT $2 OFFSET $3
+				`, strconv.Itoa(groupID), count, offset)
+
+	if err == pgx.ErrNoRows {
+		return 404, "Group not found."
+	} else if err != nil {
+		return 500, err.Error()
+	}
+
+	for rows.Next() {
+		curIng := models.Ingredient{}
+		rows.Scan(
+			&curIng.ID, &curIng.Name, &curIng.Danger,
+			&curIng.Description, &curIng.WikiLink)
+		*ingredients = append(*ingredients, &curIng)
 	}
 
 	return 200, "Successful."
