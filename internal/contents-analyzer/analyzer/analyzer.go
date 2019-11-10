@@ -27,6 +27,7 @@ type Ingredient struct {
 	Name        string        `json:"name"`
 	ID          int           `json:"id"`
 	Danger      int           `json:"danger"`
+	Groups      string        `json:"groups"`
 	Ingredients *[]Ingredient `json:"ingredients"`
 	// Description string        `json:"description"`
 	// WikiLink    string        `json:"wiki_link"`
@@ -89,11 +90,11 @@ func parse(letters []string, ings *[]Ingredient) error {
 				}
 			}
 			curWord = strings.TrimSpace(bracketsReg.ReplaceAllString(curWord, ""))
-			danger, id, e := getDangerLevel(curWord)
+			danger, id, groups, e := getDangerLevel(curWord)
 			if e != nil {
 				return e
 			}
-			*ings = append(*ings, Ingredient{curWord, id, danger, nil})
+			*ings = append(*ings, Ingredient{curWord, id, danger, groups, nil})
 			curWord = ""
 			continue
 		}
@@ -107,11 +108,11 @@ func parse(letters []string, ings *[]Ingredient) error {
 				return err
 			}
 			curWord = strings.TrimSpace(bracketsReg.ReplaceAllString(curWord, ""))
-			danger, id, e := getDangerLevel(curWord)
+			danger, id, groups, e := getDangerLevel(curWord)
 			if e != nil {
 				return err
 			}
-			*ings = append(*ings, Ingredient{curWord, id, danger, &subIngs})
+			*ings = append(*ings, Ingredient{curWord, id, danger, groups, &subIngs})
 			if i < len(letters)-1 {
 				i = closePos - 1
 			} else {
@@ -139,17 +140,26 @@ func findClosingParen(text []string, openPos int) int {
 	return closePos
 }
 
-func getDangerLevel(ing string) (int, int, error) {
+func getDangerLevel(ing string) (int, int, string, error) {
 	var danger, id int
+	var groups string
 	err := database.QueryRow(
-		`SELECT id, danger FROM ingredients WHERE name = $1 LIMIT 1
-	`, ing).Scan(&id, &danger)
+		`SELECT i.id, i.danger, coalesce(ing_groups.groups, 'NULL') FROM ingredients AS i 
+		FULL JOIN ing_groups ON i.id = ing_groups.id
+		WHERE i.name = $1
+		ORDER BY frequency LIMIT 1;
+	`, ing).Scan(&id, &danger, &groups)
+	println(groups)
 	if err != nil {
 		if err == pgx.ErrNoRows {
-			return -1, 0, nil
+			return -1, 0, "NULL", nil
 		}
-		// log.Println("ERROR analyzer.go:132: getDangerLevel()", err.Error())
-		return -1, -1, err
+		println(ing)
+		log.Println("ERROR analyzer.go:132: getDangerLevel()", err.Error())
+		return -1, -1, "NULL", err
 	}
-	return danger, id, nil
+	if groups == "0" {
+		groups = "NULL"
+	}
+	return danger, id, groups, nil
 }
