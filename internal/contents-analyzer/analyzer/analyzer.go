@@ -6,6 +6,8 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/lib/pq"
+
 	"backend/internal/database/connection"
 
 	"github.com/eadium/contents-analyzer/brackets"
@@ -27,7 +29,7 @@ type Ingredient struct {
 	Name        string        `json:"name"`
 	ID          int           `json:"id"`
 	Danger      int           `json:"danger"`
-	Groups      string        `json:"groups"`
+	Groups      []int64       `json:"groups"`
 	Ingredients *[]Ingredient `json:"ingredients"`
 	// Description string        `json:"description"`
 	// WikiLink    string        `json:"wiki_link"`
@@ -140,26 +142,26 @@ func findClosingParen(text []string, openPos int) int {
 	return closePos
 }
 
-func getDangerLevel(ing string) (int, int, string, error) {
+func getDangerLevel(ing string) (int, int, []int64, error) {
 	var danger, id int
-	var groups string
+	var groups []int64
 	err := database.QueryRow(
-		`SELECT i.id, i.danger, coalesce(ing_groups.groups, 'NULL') FROM ingredients AS i 
+		`SELECT i.id, i.danger, coalesce(ing_groups.groups, '{}') FROM ingredients AS i 
 		FULL JOIN ing_groups ON i.id = ing_groups.id
 		WHERE i.name = $1
 		ORDER BY frequency LIMIT 1;
-	`, ing).Scan(&id, &danger, &groups)
-	println(groups)
+	`, ing).Scan(&id, &danger, pq.Array(&groups))
+	// println(groups[0)
 	if err != nil {
 		if err == pgx.ErrNoRows {
-			return -1, 0, "NULL", nil
+			return -1, 0, groups, nil
 		}
-		println(ing)
+		// println(ing)
 		log.Println("ERROR analyzer.go:132: getDangerLevel()", err.Error())
-		return -1, -1, "NULL", err
+		return -1, -1, groups, err
 	}
-	if groups == "0" {
-		groups = "NULL"
-	}
+	// if len(groups) == 0 {
+	// 	groups = "NULL"
+	// }
 	return danger, id, groups, nil
 }
