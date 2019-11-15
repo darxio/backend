@@ -56,7 +56,7 @@ func Ingredients(groupID int, count int, offset int, ingredients *models.Ingredi
 	rows, err := database.Query(`
 		SELECT id, name, danger, description, wiki_link 
 			FROM ingredients WHERE id IN (
-				SELECT id FROM ing_groups WHERE NOT ($1 = ANY (groups)) 
+				SELECT id FROM ing_groups WHERE (NOT ($1 = ANY (groups))) AND (array_length(groups, 1) > 0)
 			)
 				ORDER BY frequency DESC, danger DESC LIMIT $2 OFFSET $3
 				`, strconv.Itoa(groupID), count, offset)
