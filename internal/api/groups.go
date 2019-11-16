@@ -109,3 +109,33 @@ func Groups_Ingredients(ctx *fasthttp.RequestCtx) {
 		ctx.SetBody(mJSON)
 	}
 }
+
+func Groups_Search(ctx *fasthttp.RequestCtx) {
+	log.Println("Groups Search: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
+	groupName, _ := common.NameOrID(ctx)
+
+	var code int
+	var message string
+	grps := models.GroupArr{}
+	code, message = groups.Search(groupName, &grps)
+
+	iJSON, _ := grps.MarshalJSON()
+
+	switch code {
+	case fasthttp.StatusOK:
+		ctx.SetStatusCode(fasthttp.StatusOK)
+		ctx.SetBody(iJSON)
+	case fasthttp.StatusNotFound:
+		ctx.SetStatusCode(fasthttp.StatusNotFound)
+		m := &models.Msg{}
+		m.Message = message
+		mJSON, _ := m.MarshalJSON()
+		ctx.SetBody(mJSON)
+	case fasthttp.StatusInternalServerError:
+		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+		m := &models.Msg{}
+		m.Message = message
+		mJSON, _ := m.MarshalJSON()
+		ctx.SetBody(mJSON)
+	}
+}

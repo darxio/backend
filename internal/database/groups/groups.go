@@ -77,3 +77,25 @@ func Ingredients(groupID int, count int, offset int, ingredients *models.Ingredi
 
 	return 200, "Successful."
 }
+
+func Search(groupsName string, groups *models.GroupArr) (code int, message string) {
+	rows, err := database.Query(`
+		SELECT id, name, about 
+			FROM groups WHERE name LIKE '%' || $1 || '%' 
+				ORDER BY id
+				`, groupsName)
+
+	if err == pgx.ErrNoRows {
+		return 404, "Ingredient not found."
+	} else if err != nil {
+		return 500, err.Error()
+	}
+
+	for rows.Next() {
+		curGroup := models.Group{}
+		rows.Scan(&curGroup.ID, &curGroup.Name, &curGroup.About)
+		*groups = append(*groups, &curGroup)
+	}
+
+	return 200, "Successful."
+}

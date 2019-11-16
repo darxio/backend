@@ -43,7 +43,7 @@ func main() {
 	r.GET("/groups", api.Groups_All)
 	r.GET("/groups/about/:name_or_id", api.Groups_About)
 	r.GET("/groups/ingredients/:group_id/:count/:page", api.Groups_Ingredients)
-	r.GET("/groups/search/:name_or_id/", api.Ingredients_Search)
+	r.GET("/groups/search/:name_or_id/", api.Groups_Search)
 
 	// Ingredients
 	// r.GET("/ingredients", api.Ingredients_All)
