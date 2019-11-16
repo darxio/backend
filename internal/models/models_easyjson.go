@@ -196,6 +196,8 @@ func easyjsonD2b7633eDecodeBackendInternalModels2(in *jlexer.Lexer, out *Product
 			continue
 		}
 		switch key {
+		case "shrinked":
+			out.Shrinked = bool(in.Bool())
 		case "barcode":
 			out.Barcode = uint64(in.Uint64())
 		case "name":
@@ -215,8 +217,13 @@ func easyjsonD2b7633eEncodeBackendInternalModels2(out *jwriter.Writer, in Produc
 	first := true
 	_ = first
 	{
-		const prefix string = ",\"barcode\":"
+		const prefix string = ",\"shrinked\":"
 		out.RawString(prefix[1:])
+		out.Bool(bool(in.Shrinked))
+	}
+	{
+		const prefix string = ",\"barcode\":"
+		out.RawString(prefix)
 		out.Uint64(uint64(in.Barcode))
 	}
 	{
@@ -269,6 +276,8 @@ func easyjsonD2b7633eDecodeBackendInternalModels3(in *jlexer.Lexer, out *Product
 			continue
 		}
 		switch key {
+		case "shrinked":
+			out.Shrinked = bool(in.Bool())
 		case "barcode":
 			out.Barcode = uint64(in.Uint64())
 		case "name":
@@ -312,8 +321,13 @@ func easyjsonD2b7633eEncodeBackendInternalModels3(out *jwriter.Writer, in Produc
 	first := true
 	_ = first
 	{
-		const prefix string = ",\"barcode\":"
+		const prefix string = ",\"shrinked\":"
 		out.RawString(prefix[1:])
+		out.Bool(bool(in.Shrinked))
+	}
+	{
+		const prefix string = ",\"barcode\":"
+		out.RawString(prefix)
 		out.Uint64(uint64(in.Barcode))
 	}
 	{
@@ -507,6 +521,29 @@ func easyjsonD2b7633eDecodeBackendInternalModels5(in *jlexer.Lexer, out *Ingredi
 			out.Description = string(in.String())
 		case "wiki_link":
 			out.WikiLink = string(in.String())
+		case "groups":
+			if in.IsNull() {
+				in.Skip()
+				out.Groups = nil
+			} else {
+				in.Delim('[')
+				if out.Groups == nil {
+					if !in.IsDelim(']') {
+						out.Groups = make([]int64, 0, 8)
+					} else {
+						out.Groups = []int64{}
+					}
+				} else {
+					out.Groups = (out.Groups)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v10 int64
+					v10 = int64(in.Int64())
+					out.Groups = append(out.Groups, v10)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
 		default:
 			in.SkipRecursive()
 		}
@@ -545,6 +582,22 @@ func easyjsonD2b7633eEncodeBackendInternalModels5(out *jwriter.Writer, in Ingred
 		const prefix string = ",\"wiki_link\":"
 		out.RawString(prefix)
 		out.String(string(in.WikiLink))
+	}
+	{
+		const prefix string = ",\"groups\":"
+		out.RawString(prefix)
+		if in.Groups == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+			out.RawString("null")
+		} else {
+			out.RawByte('[')
+			for v11, v12 := range in.Groups {
+				if v11 > 0 {
+					out.RawByte(',')
+				}
+				out.Int64(int64(v12))
+			}
+			out.RawByte(']')
+		}
 	}
 	out.RawByte('}')
 }
@@ -589,19 +642,19 @@ func easyjsonD2b7633eDecodeBackendInternalModels6(in *jlexer.Lexer, out *GroupAr
 			*out = (*out)[:0]
 		}
 		for !in.IsDelim(']') {
-			var v10 *Group
+			var v13 *Group
 			if in.IsNull() {
 				in.Skip()
-				v10 = nil
+				v13 = nil
 			} else {
-				if v10 == nil {
-					v10 = new(Group)
+				if v13 == nil {
+					v13 = new(Group)
 				}
 				if data := in.Raw(); in.Ok() {
-					in.AddError((*v10).UnmarshalJSON(data))
+					in.AddError((*v13).UnmarshalJSON(data))
 				}
 			}
-			*out = append(*out, v10)
+			*out = append(*out, v13)
 			in.WantComma()
 		}
 		in.Delim(']')
@@ -615,14 +668,14 @@ func easyjsonD2b7633eEncodeBackendInternalModels6(out *jwriter.Writer, in GroupA
 		out.RawString("null")
 	} else {
 		out.RawByte('[')
-		for v11, v12 := range in {
-			if v11 > 0 {
+		for v14, v15 := range in {
+			if v14 > 0 {
 				out.RawByte(',')
 			}
-			if v12 == nil {
+			if v15 == nil {
 				out.RawString("null")
 			} else {
-				out.Raw((*v12).MarshalJSON())
+				out.Raw((*v15).MarshalJSON())
 			}
 		}
 		out.RawByte(']')

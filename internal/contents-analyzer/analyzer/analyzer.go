@@ -148,7 +148,7 @@ func getDangerLevel(ing string) (int, int, []int64, error) {
 	err := database.QueryRow(
 		`SELECT i.id, i.danger, coalesce(ing_groups.groups, '{}') FROM ingredients AS i 
 		FULL JOIN ing_groups ON i.id = ing_groups.id
-		WHERE i.name = $1
+		WHERE i.name = $1 
 		ORDER BY frequency LIMIT 1;
 	`, ing).Scan(&id, &danger, pq.Array(&groups))
 	// println(groups[0)
@@ -157,7 +157,7 @@ func getDangerLevel(ing string) (int, int, []int64, error) {
 			return -1, 0, groups, nil
 		}
 		// println(ing)
-		log.Println("ERROR analyzer.go:132: getDangerLevel()", err.Error())
+		log.Println("ERROR analyzer.go:160: getDangerLevel()", err.Error())
 		return -1, -1, groups, err
 	}
 	// if len(groups) == 0 {

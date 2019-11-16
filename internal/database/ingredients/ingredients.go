@@ -5,6 +5,7 @@ import (
 	"backend/internal/models"
 
 	"github.com/jackc/pgx"
+	"github.com/lib/pq"
 )
 
 var database *pgx.ConnPool
@@ -86,8 +87,10 @@ func Search(ingredientName string, ingredients *models.IngredientArr) (code int,
 
 func Top(count int, offset int, ingredients *models.IngredientArr) (code int, message string) {
 	rows, err := database.Query(`
-		SELECT id, name, danger, description, wiki_link 
-			FROM ingredients 
+		SELECT i.id, i.name, i.danger, i.description, i.wiki_link, coalesce(ig.groups, '{}')
+			FROM ingredients AS i
+			JOIN ing_groups AS ig 
+				ON i.id = ig.id
 				ORDER BY frequency DESC, danger DESC LIMIT $1 OFFSET $2
 				`, count, offset)
 
@@ -101,7 +104,7 @@ func Top(count int, offset int, ingredients *models.IngredientArr) (code int, me
 		curIng := models.Ingredient{}
 		rows.Scan(
 			&curIng.ID, &curIng.Name, &curIng.Danger,
-			&curIng.Description, &curIng.WikiLink)
+			&curIng.Description, &curIng.WikiLink, pq.Array(&curIng.Groups))
 		*ingredients = append(*ingredients, &curIng)
 	}
 
