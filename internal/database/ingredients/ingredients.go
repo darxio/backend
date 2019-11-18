@@ -40,16 +40,22 @@ func About(ingredientName string, ingredientID int32, ingredient *models.Ingredi
 	var err error
 	if ingredientID != 0 {
 		err = database.QueryRow(`
-			SELECT id, name, danger, description, wiki_link 
-				FROM ingredients WHERE id = $1;`, ingredientID).Scan(
+				SELECT i.id, i.name, i.danger, i.description, i.wiki_link, coalesce(ig.groups, '{}')
+				FROM ingredients AS i
+				JOIN ing_groups AS ig ON i.id = ig.id
+				WHERE i.id = $1
+			`, ingredientID).Scan(
 			&ingredient.ID, &ingredient.Name, &ingredient.Danger,
-			&ingredient.Description, &ingredient.WikiLink)
+			&ingredient.Description, &ingredient.WikiLink, pq.Array(&ingredient.Groups))
 	} else {
 		err = database.QueryRow(`
-			SELECT id, name, danger, description, wiki_link 
-				FROM ingredients WHERE name = $1;`, ingredientName).Scan(
+			SELECT i.id, i.name, i.danger, i.description, i.wiki_link, coalesce(ig.groups, '{}')
+				FROM ingredients AS i
+				JOIN ing_groups AS ig ON i.id = ig.id
+				WHERE i.name = $1
+		`, ingredientName).Scan(
 			&ingredient.ID, &ingredient.Name, &ingredient.Danger,
-			&ingredient.Description, &ingredient.WikiLink)
+			&ingredient.Description, &ingredient.WikiLink, pq.Array(&ingredient.Groups))
 	}
 
 	if err == pgx.ErrNoRows {
