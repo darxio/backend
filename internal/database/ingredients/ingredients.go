@@ -63,9 +63,11 @@ func About(ingredientName string, ingredientID int32, ingredient *models.Ingredi
 
 func Search(ingredientName string, ingredients *models.IngredientArr) (code int, message string) {
 	rows, err := database.Query(`
-		SELECT id, name, danger, description, wiki_link 
-			FROM ingredients WHERE name LIKE '%' || $1 || '%' 
-				ORDER BY frequency DESC, danger DESC LIMIT 10
+		SELECT i.id, i.name, i.danger, i.description, i.wiki_link, coalesce(ig.groups, '{}')
+			FROM ingredients AS i
+			JOIN ing_groups AS ig ON i.id = ig.id
+			WHERE i.name LIKE '%' || $1 || '%' 
+				ORDER BY i.frequency DESC, i.danger DESC LIMIT 10
 				`, ingredientName)
 
 	if err == pgx.ErrNoRows {
@@ -78,7 +80,7 @@ func Search(ingredientName string, ingredients *models.IngredientArr) (code int,
 		curIng := models.Ingredient{}
 		rows.Scan(
 			&curIng.ID, &curIng.Name, &curIng.Danger,
-			&curIng.Description, &curIng.WikiLink)
+			&curIng.Description, &curIng.WikiLink, pq.Array(&curIng.Groups))
 		*ingredients = append(*ingredients, &curIng)
 	}
 
