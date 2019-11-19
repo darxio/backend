@@ -111,3 +111,13 @@ func Product_GetManyByName(ctx *fasthttp.RequestCtx) {
 		ctx.SetBody(mJSON)
 	}
 }
+
+func Product_Add(ctx *fasthttp.RequestCtx) {
+	log.Println("Product Add: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
+	barcode, _ := ctx.UserValue("barcode").(int64)
+	name, _ := ctx.UserValue("name").(string)
+
+	products.Add(barcode, name)
+
+	ctx.SetStatusCode(fasthttp.StatusOK)
+}
