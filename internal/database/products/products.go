@@ -154,3 +154,7 @@ func GetManyByName(name string, productExt *models.ProductExtendedArr,
 
 	return 200, "Successful."
 }
+
+func Add(barcode int64, name string) {
+	database.Exec("INSERT INTO moderation_products(barcode, name) VALUES ($1, $2);", barcode, name)
+}
