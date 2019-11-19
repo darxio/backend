@@ -40,7 +40,13 @@ func About(ingredientName string, ingredientID int32, ingredient *models.Ingredi
 	var err error
 	if ingredientID != 0 {
 		err = database.QueryRow(`
-				SELECT i.id, i.name, i.danger, i.description, i.wiki_link, coalesce(ig.groups, '{}')
+			SELECT 
+				i.id,
+				COALESCE(i.name, 'NULL'),
+				COALESCE(i.danger, 'NULL'),
+				COALESCE(i.description, 'NULL'),
+				COALESCE(i.wiki_link, 'NULL'),
+				COALESCE(ig.groups, '{}')
 				FROM ingredients AS i
 				JOIN ing_groups AS ig ON i.id = ig.id
 				WHERE i.id = $1
@@ -49,7 +55,13 @@ func About(ingredientName string, ingredientID int32, ingredient *models.Ingredi
 			&ingredient.Description, &ingredient.WikiLink, pq.Array(&ingredient.Groups))
 	} else {
 		err = database.QueryRow(`
-			SELECT i.id, i.name, i.danger, i.description, i.wiki_link, coalesce(ig.groups, '{}')
+			SELECT 
+				i.id,
+				COALESCE(i.name, 'NULL'),
+				COALESCE(i.danger, 'NULL'),
+				COALESCE(i.description, 'NULL'),
+				COALESCE(i.wiki_link, 'NULL'),
+				COALESCE(ig.groups, '{}')
 				FROM ingredients AS i
 				JOIN ing_groups AS ig ON i.id = ig.id
 				WHERE i.name = $1
@@ -69,7 +81,13 @@ func About(ingredientName string, ingredientID int32, ingredient *models.Ingredi
 
 func Search(ingredientName string, ingredients *models.IngredientArr) (code int, message string) {
 	rows, err := database.Query(`
-		SELECT i.id, i.name, i.danger, i.description, i.wiki_link, coalesce(ig.groups, '{}')
+		SELECT i.id,
+		COALESCE(i.name, 'NULL'),
+		COALESCE(i.danger, 'NULL'),
+		COALESCE(i.description, 'NULL'),
+		COALESCE(i.wiki_link, 'NULL'),
+		COALESCE(ig.groups, '{}')
+		FROM ingredients AS i
 			FROM ingredients AS i
 			JOIN ing_groups AS ig ON i.id = ig.id
 			WHERE i.name LIKE '%' || $1 || '%' 
@@ -95,7 +113,13 @@ func Search(ingredientName string, ingredients *models.IngredientArr) (code int,
 
 func Top(count int, offset int, ingredients *models.IngredientArr) (code int, message string) {
 	rows, err := database.Query(`
-		SELECT i.id, i.name, i.danger, i.description, i.wiki_link, coalesce(ig.groups, '{}')
+		SELECT 
+			i.id,
+			COALESCE(i.name, 'NULL'),
+			COALESCE(i.danger, 'NULL'),
+			COALESCE(i.description, 'NULL'),
+			COALESCE(i.wiki_link, 'NULL'),
+			COALESCE(ig.groups, '{}')
 			FROM ingredients AS i
 			JOIN ing_groups AS ig 
 				ON i.id = ig.id

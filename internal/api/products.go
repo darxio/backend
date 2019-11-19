@@ -1,7 +1,6 @@
 package api
 
 import (
-	"backend/internal/common"
 	"backend/internal/database/products"
 	"backend/internal/models"
 
@@ -12,7 +11,7 @@ import (
 
 	"github.com/valyala/fasthttp"
 )
-
+/* 
 func Product_All(ctx *fasthttp.RequestCtx) {
 	log.Println("Product All: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
 
@@ -33,7 +32,7 @@ func Product_All(ctx *fasthttp.RequestCtx) {
 		ctx.SetBody(mJSON)
 	}
 }
-
+ */
 func Product_GetOneBarcode(ctx *fasthttp.RequestCtx) {
 	log.Println("Product GetOneBarcode: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
 	barcode, _ := strconv.ParseInt(ctx.UserValue("barcode").(string), 10, 64)
