@@ -43,7 +43,7 @@ func About(ingredientName string, ingredientID int32, ingredient *models.Ingredi
 			SELECT 
 				i.id,
 				COALESCE(i.name, 'NULL'),
-				COALESCE(i.danger, 'NULL'),
+				COALESCE(i.danger, -1),
 				COALESCE(i.description, 'NULL'),
 				COALESCE(i.wiki_link, 'NULL'),
 				COALESCE(ig.groups, '{}')
@@ -58,7 +58,7 @@ func About(ingredientName string, ingredientID int32, ingredient *models.Ingredi
 			SELECT 
 				i.id,
 				COALESCE(i.name, 'NULL'),
-				COALESCE(i.danger, 'NULL'),
+				COALESCE(i.danger, -1),
 				COALESCE(i.description, 'NULL'),
 				COALESCE(i.wiki_link, 'NULL'),
 				COALESCE(ig.groups, '{}')
@@ -83,7 +83,7 @@ func Search(ingredientName string, ingredients *models.IngredientArr) (code int,
 	rows, err := database.Query(`
 		SELECT i.id,
 		COALESCE(i.name, 'NULL'),
-		COALESCE(i.danger, 'NULL'),
+		COALESCE(i.danger, -1),
 		COALESCE(i.description, 'NULL'),
 		COALESCE(i.wiki_link, 'NULL'),
 		COALESCE(ig.groups, '{}')
@@ -116,7 +116,7 @@ func Top(count int, offset int, ingredients *models.IngredientArr) (code int, me
 		SELECT 
 			i.id,
 			COALESCE(i.name, 'NULL'),
-			COALESCE(i.danger, 'NULL'),
+			COALESCE(i.danger, -1),
 			COALESCE(i.description, 'NULL'),
 			COALESCE(i.wiki_link, 'NULL'),
 			COALESCE(ig.groups, '{}')
