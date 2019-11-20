@@ -88,7 +88,6 @@ func Search(ingredientName string, ingredients *models.IngredientArr) (code int,
 		COALESCE(i.wiki_link, 'NULL'),
 		COALESCE(ig.groups, '{}')
 		FROM ingredients AS i
-			FROM ingredients AS i
 			JOIN ing_groups AS ig ON i.id = ig.id
 			WHERE i.name LIKE '%' || $1 || '%' 
 				ORDER BY i.frequency DESC, i.danger DESC LIMIT 10
