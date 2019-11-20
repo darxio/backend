@@ -142,25 +142,21 @@ func GetManyByName(name string, productExt *models.ProductExtendedArr,
 			log.Println("database/products.go (shrinked): 500, " + err.Error())
 			return 500, err.Error()
 		}
-
 		*shrinked = true
-
 		return 200, "Successful."
 
 	} else if err != nil {
 		log.Println("database/products.go: 500, " + err.Error())
 		return 500, err.Error()
 	}
-
 	return 200, "Successful."
 }
 
-func Add(barcode int64, name string) (code int, message string) {
-	_, err := database.Exec("INSERT INTO moderation_products(barcode, name) VALUES ($1, $2);", barcode, name)
+func Add(barcode uint64, name string) (code int, message string) {
+	_, err := database.Exec("INSERT INTO moderation_products(barcode, name) VALUES ($1, $2)", barcode, name)
 	if err != nil {
-		log.Println("database/products.go (shrinked): 500, " + err.Error())
+		log.Println("database/products.go:161 500, " + err.Error())
 		return 500, err.Error()
 	}
 	return 200, "Successful."
-
 }

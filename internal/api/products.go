@@ -111,12 +111,27 @@ func Product_GetManyByName(ctx *fasthttp.RequestCtx) {
 	}
 }
 
+type ProductToAdd struct {
+	Barcode  uint64 `json:"barcode"`
+	Name     string `json:"name"`
+}
+
 func Product_Add(ctx *fasthttp.RequestCtx) {
 	log.Println("Product Add: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
-	barcode, _ := ctx.UserValue("barcode").(int64)
-	name, _ := ctx.UserValue("name").(string)
+	
+	p := models.ProductShrinked{}
+	p.UnmarshalJSON(ctx.PostBody())
+	println(ctx.PostBody())
+	code, message := products.Add(p.Barcode, p.Name)
 
-	products.Add(barcode, name)
-
-	ctx.SetStatusCode(fasthttp.StatusOK)
+	switch code {
+	case fasthttp.StatusOK:
+		ctx.SetStatusCode(fasthttp.StatusOK)
+	case fasthttp.StatusInternalServerError:
+		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+		m := &models.Msg{}
+		m.Message = message
+		mJSON, _ := m.MarshalJSON()
+		ctx.SetBody(mJSON)
+	}
 }
