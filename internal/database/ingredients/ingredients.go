@@ -42,13 +42,13 @@ func About(ingredientName string, ingredientID int32, ingredient *models.Ingredi
 		err = database.QueryRow(`
 			SELECT 
 				i.id,
-				COALESCE(i.name, 'NULL'),
-				COALESCE(i.danger, -1),
-				COALESCE(i.description, 'NULL'),
-				COALESCE(i.wiki_link, 'NULL'),
-				COALESCE(ig.groups, '{}')
+				COALESCE(i.name, 'NULL') AS name,
+				COALESCE(i.danger, -1) AS danger,
+				COALESCE(i.description, 'NULL') AS description,
+				COALESCE(i.wiki_link, 'NULL') AS wiki_link,
+				COALESCE(ig.groups, '{}') AS groups
 				FROM ingredients AS i
-				JOIN ing_groups AS ig ON i.id = ig.id
+				LEFT JOIN ing_groups AS ig ON i.id = ig.id
 				WHERE i.id = $1
 			`, ingredientID).Scan(
 			&ingredient.ID, &ingredient.Name, &ingredient.Danger,
@@ -57,13 +57,13 @@ func About(ingredientName string, ingredientID int32, ingredient *models.Ingredi
 		err = database.QueryRow(`
 			SELECT 
 				i.id,
-				COALESCE(i.name, 'NULL'),
-				COALESCE(i.danger, -1),
-				COALESCE(i.description, 'NULL'),
-				COALESCE(i.wiki_link, 'NULL'),
-				COALESCE(ig.groups, '{}')
+				COALESCE(i.name, 'NULL') AS name,
+				COALESCE(i.danger, -1) AS danger,
+				COALESCE(i.description, 'NULL') AS description,
+				COALESCE(i.wiki_link, 'NULL') AS wiki_link,
+				COALESCE(ig.groups, '{}') AS groups
 				FROM ingredients AS i
-				JOIN ing_groups AS ig ON i.id = ig.id
+				LEFT JOIN ing_groups AS ig ON i.id = ig.id
 				WHERE i.name = $1
 		`, ingredientName).Scan(
 			&ingredient.ID, &ingredient.Name, &ingredient.Danger,
@@ -82,13 +82,13 @@ func About(ingredientName string, ingredientID int32, ingredient *models.Ingredi
 func Search(ingredientName string, ingredients *models.IngredientArr) (code int, message string) {
 	rows, err := database.Query(`
 		SELECT i.id,
-		COALESCE(i.name, 'NULL'),
-		COALESCE(i.danger, -1),
-		COALESCE(i.description, 'NULL'),
-		COALESCE(i.wiki_link, 'NULL'),
-		COALESCE(ig.groups, '{}')
+		COALESCE(i.name, 'NULL') AS name,
+		COALESCE(i.danger, -1) AS danger,
+		COALESCE(i.description, 'NULL') AS description,
+		COALESCE(i.wiki_link, 'NULL') AS wiki_link,
+		COALESCE(ig.groups, '{}') AS groups
 		FROM ingredients AS i
-			JOIN ing_groups AS ig ON i.id = ig.id
+			LEFT JOIN ing_groups AS ig ON i.id = ig.id
 			WHERE i.name LIKE '%' || $1 || '%' 
 				ORDER BY i.frequency DESC, i.danger DESC LIMIT 10
 				`, ingredientName)
@@ -120,7 +120,7 @@ func Top(count int, offset int, ingredients *models.IngredientArr) (code int, me
 			COALESCE(i.wiki_link, 'NULL'),
 			COALESCE(ig.groups, '{}')
 			FROM ingredients AS i
-			JOIN ing_groups AS ig 
+			LEFT JOIN ing_groups AS ig 
 				ON i.id = ig.id
 				ORDER BY frequency DESC, danger DESC LIMIT $1 OFFSET $2
 				`, count, offset)
