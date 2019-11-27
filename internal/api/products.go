@@ -1,7 +1,6 @@
 package api
 
 import (
-	"backend/internal/common"
 	"backend/internal/database/products"
 	"backend/internal/models"
 
@@ -12,7 +11,7 @@ import (
 
 	"github.com/valyala/fasthttp"
 )
-
+/* 
 func Product_All(ctx *fasthttp.RequestCtx) {
 	log.Println("Product All: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
 
@@ -33,7 +32,7 @@ func Product_All(ctx *fasthttp.RequestCtx) {
 		ctx.SetBody(mJSON)
 	}
 }
-
+ */
 func Product_GetOneBarcode(ctx *fasthttp.RequestCtx) {
 	log.Println("Product GetOneBarcode: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
 	barcode, _ := strconv.ParseInt(ctx.UserValue("barcode").(string), 10, 64)
@@ -103,6 +102,31 @@ func Product_GetManyByName(ctx *fasthttp.RequestCtx) {
 		m.Message = message
 		mJSON, _ := m.MarshalJSON()
 		ctx.SetBody(mJSON)
+	case fasthttp.StatusInternalServerError:
+		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+		m := &models.Msg{}
+		m.Message = message
+		mJSON, _ := m.MarshalJSON()
+		ctx.SetBody(mJSON)
+	}
+}
+
+type ProductToAdd struct {
+	Barcode  uint64 `json:"barcode"`
+	Name     string `json:"name"`
+}
+
+func Product_Add(ctx *fasthttp.RequestCtx) {
+	log.Println("Product Add: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
+	
+	p := models.ProductShrinked{}
+	p.UnmarshalJSON(ctx.PostBody())
+	println(ctx.PostBody())
+	code, message := products.Add(p.Barcode, p.Name)
+
+	switch code {
+	case fasthttp.StatusOK:
+		ctx.SetStatusCode(fasthttp.StatusOK)
 	case fasthttp.StatusInternalServerError:
 		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
 		m := &models.Msg{}
