@@ -64,3 +64,9 @@ type ProductExtendedArr []*ProductExtended
 
 // easyjson:json
 type ProductShrinkedArr []*ProductShrinked
+
+// easyjson:json
+type ProductToAdd struct {
+	Barcode uint64 `json:"barcode"`
+	Name    string `json:"name"`
+}
