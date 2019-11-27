@@ -941,6 +941,8 @@ func easyjsonD2b7633eDecodeBackendInternalModels10(in *jlexer.Lexer, out *Group)
 			out.Name = string(in.String())
 		case "about":
 			out.About = string(in.String())
+		case "image_link":
+			out.ImageLink = string(in.String())
 		default:
 			in.SkipRecursive()
 		}
@@ -969,6 +971,11 @@ func easyjsonD2b7633eEncodeBackendInternalModels10(out *jwriter.Writer, in Group
 		const prefix string = ",\"about\":"
 		out.RawString(prefix)
 		out.String(string(in.About))
+	}
+	{
+		const prefix string = ",\"image_link\":"
+		out.RawString(prefix)
+		out.String(string(in.ImageLink))
 	}
 	out.RawByte('}')
 }
