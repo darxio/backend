@@ -62,6 +62,8 @@ func main() {
 	r.GET("/products/search/:name", api.Product_GetManyByName)
 	r.POST("/products/add", api.Product_Add)
 
+	r.POST("/fruits/search", api.Find_Fruit)
+
 	log.Println("Listening on http://localhost:8888...")
 	multiWriter := io.MultiWriter(os.Stdout, logFile)
 	log.SetOutput(multiWriter)

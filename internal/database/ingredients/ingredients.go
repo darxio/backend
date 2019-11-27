@@ -91,7 +91,7 @@ func Search(ingredientName string, ingredients *models.IngredientArr) (code int,
 			LEFT JOIN ing_groups AS ig ON i.id = ig.id
 			WHERE i.name LIKE '%' || $1 || '%' 
 				ORDER BY i.frequency DESC, i.danger DESC LIMIT 10
-				`, ingredientName)
+		`, ingredientName)
 
 	if err == pgx.ErrNoRows {
 		return 404, "Ingredient not found."

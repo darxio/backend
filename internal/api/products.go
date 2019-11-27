@@ -11,7 +11,8 @@ import (
 
 	"github.com/valyala/fasthttp"
 )
-/* 
+
+/*
 func Product_All(ctx *fasthttp.RequestCtx) {
 	log.Println("Product All: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
 
@@ -32,7 +33,8 @@ func Product_All(ctx *fasthttp.RequestCtx) {
 		ctx.SetBody(mJSON)
 	}
 }
- */
+*/
+
 func Product_GetOneBarcode(ctx *fasthttp.RequestCtx) {
 	log.Println("Product GetOneBarcode: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
 	barcode, _ := strconv.ParseInt(ctx.UserValue("barcode").(string), 10, 64)
@@ -112,13 +114,13 @@ func Product_GetManyByName(ctx *fasthttp.RequestCtx) {
 }
 
 type ProductToAdd struct {
-	Barcode  uint64 `json:"barcode"`
-	Name     string `json:"name"`
+	Barcode uint64 `json:"barcode"`
+	Name    string `json:"name"`
 }
 
 func Product_Add(ctx *fasthttp.RequestCtx) {
 	log.Println("Product Add: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
-	
+
 	p := models.ProductShrinked{}
 	p.UnmarshalJSON(ctx.PostBody())
 	println(ctx.PostBody())
