@@ -19,7 +19,7 @@ type Group struct {
 	About string `json:"about"`
 }
 
-go run// easyjson:json
+// easyjson:json
 type GroupArr []*Group
 
 // easyjson:json
