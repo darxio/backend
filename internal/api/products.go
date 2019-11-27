@@ -113,15 +113,10 @@ func Product_GetManyByName(ctx *fasthttp.RequestCtx) {
 	}
 }
 
-type ProductToAdd struct {
-	Barcode uint64 `json:"barcode"`
-	Name    string `json:"name"`
-}
-
 func Product_Add(ctx *fasthttp.RequestCtx) {
 	log.Println("Product Add: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
 
-	p := models.ProductShrinked{}
+	p := models.ProductToAdd{}
 	p.UnmarshalJSON(ctx.PostBody())
 	println(ctx.PostBody())
 	code, message := products.Add(p.Barcode, p.Name)
