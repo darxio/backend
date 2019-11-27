@@ -14,9 +14,10 @@ type Msg struct {
 
 // easyjson:json
 type Group struct {
-	ID    int32  `json:"id"`
-	Name  string `json:"name"`
-	About string `json:"about"`
+	ID        int32  `json:"id"`
+	Name      string `json:"name"`
+	About     string `json:"about"`
+	ImageLink string `json:"image_link"`
 }
 
 // easyjson:json
