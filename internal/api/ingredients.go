@@ -89,7 +89,7 @@ func Ingredients_About(ctx *fasthttp.RequestCtx) {
 	}
 }
 
-func Ingredients_Search(ctx *fasthttp.RequestCtx) {
+func Ingredients_Search_Paginated(ctx *fasthttp.RequestCtx) {
 	log.Println("Ingredients Search: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
 	ingredientName, _ := common.NameOrID(ctx)
 	count, _ := strconv.Atoi(ctx.UserValue("count").(string))
@@ -105,6 +105,39 @@ func Ingredients_Search(ctx *fasthttp.RequestCtx) {
 	} else if page < 0 {
 		page = 0
 	}
+
+	offset := count * page
+	var code int
+	var message string
+	ings := models.IngredientArr{}
+	code, message = ingredients.Search(ingredientName, count, offset, &ings)
+
+	iJSON, _ := ings.MarshalJSON()
+
+	switch code {
+	case fasthttp.StatusOK:
+		ctx.SetStatusCode(fasthttp.StatusOK)
+		ctx.SetBody(iJSON)
+	case fasthttp.StatusNotFound:
+		ctx.SetStatusCode(fasthttp.StatusNotFound)
+		m := &models.Msg{}
+		m.Message = message
+		mJSON, _ := m.MarshalJSON()
+		ctx.SetBody(mJSON)
+	case fasthttp.StatusInternalServerError:
+		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+		m := &models.Msg{}
+		m.Message = message
+		mJSON, _ := m.MarshalJSON()
+		ctx.SetBody(mJSON)
+	}
+}
+
+func Ingredients_Search(ctx *fasthttp.RequestCtx) {
+	log.Println("Ingredients Search: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
+	ingredientName, _ := common.NameOrID(ctx)
+	count := 10
+	page := 0
 
 	offset := count * page
 	var code int
