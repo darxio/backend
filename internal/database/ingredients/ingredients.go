@@ -79,7 +79,7 @@ func About(ingredientName string, ingredientID int32, ingredient *models.Ingredi
 	return 200, "Successful."
 }
 
-func Search(ingredientName string, ingredients *models.IngredientArr) (code int, message string) {
+func Search(ingredientName string, count int, offset int, ingredients *models.IngredientArr) (code int, message string) {
 	rows, err := database.Query(`
 		SELECT i.id,
 		COALESCE(i.name, 'NULL') AS name,
@@ -90,8 +90,9 @@ func Search(ingredientName string, ingredients *models.IngredientArr) (code int,
 		FROM ingredients AS i
 			LEFT JOIN ing_groups AS ig ON i.id = ig.id
 			WHERE i.name LIKE '%' || $1 || '%' 
-				ORDER BY i.frequency DESC, i.danger DESC LIMIT 10
-		`, ingredientName)
+				ORDER BY i.frequency DESC, i.danger DESC 
+				LIMIT $2 OFFSET $3
+		`, ingredientName, count, offset)
 
 	if err == pgx.ErrNoRows {
 		return 404, "Ingredient not found."

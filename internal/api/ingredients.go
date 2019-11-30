@@ -92,11 +92,25 @@ func Ingredients_About(ctx *fasthttp.RequestCtx) {
 func Ingredients_Search(ctx *fasthttp.RequestCtx) {
 	log.Println("Ingredients Search: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
 	ingredientName, _ := common.NameOrID(ctx)
+	count, _ := strconv.Atoi(ctx.UserValue("count").(string))
+	page, _ := strconv.Atoi(ctx.UserValue("page").(string))
 
+	if count > 50 {
+		count = 50
+	} else if count < 1 {
+		count = 1
+	}
+	if page > 50 {
+		page = 50
+	} else if page < 0 {
+		page = 0
+	}
+
+	offset := count * page
 	var code int
 	var message string
 	ings := models.IngredientArr{}
-	code, message = ingredients.Search(ingredientName, &ings)
+	code, message = ingredients.Search(ingredientName, count, offset, &ings)
 
 	iJSON, _ := ings.MarshalJSON()
 

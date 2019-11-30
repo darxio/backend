@@ -94,7 +94,9 @@ func GetOneBarcode(barcode int64, productExt *models.ProductExtended,
 }
 
 func GetManyByName(name string, productExt *models.ProductExtendedArr,
-	productShr *models.ProductShrinkedArr, shrinked *bool) (code int, message string) {
+	productShr *models.ProductShrinkedArr, shrinked *bool, count int,
+	offset int) (code int, message string) {
+
 	res, err := database.Query(`
 	SELECT
 		barcode,
@@ -110,7 +112,8 @@ func GetManyByName(name string, productExt *models.ProductExtendedArr,
 		FROM products_extended
 		WHERE name LIKE '%'||$1||'%' AND category_url LIKE '%Товары/Продукты питания%'
 		ORDER BY length(description)
-		LIMIT 10`, name)
+		LIMIT $2 OFFSET $3
+		`, name, count, offset)
 	if err == nil && res.Err() == nil {
 		for res.Next() {
 			curProd := models.ProductExtended{}

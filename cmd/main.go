@@ -48,7 +48,7 @@ func main() {
 	// Ingredients
 	// r.GET("/ingredients", api.Ingredients_All)
 	r.GET("/ingredients/name/:name_or_id/", api.Ingredients_About)
-	r.GET("/ingredients/search/:name_or_id/", api.Ingredients_Search)
+	r.GET("/ingredients/search/:name_or_id/:count/:page", api.Ingredients_Search)
 	r.GET("/ingredients/groups/:name_or_id/", api.Ingredients_GroupAll)
 	r.GET("/ingredients/top/:count/:page", api.Ingredients_Top)
 
@@ -59,7 +59,7 @@ func main() {
 
 	// r.GET("/products", api.Product_All)
 	r.GET("/products/barcode/:barcode", api.Product_GetOneBarcode)
-	r.GET("/products/search/:name", api.Product_GetManyByName)
+	r.GET("/products/search/:name/:count/:page", api.Product_GetManyByName)
 	r.POST("/products/add", api.Product_Add)
 
 	r.POST("/fruits/search", api.Find_Fruit)

@@ -78,11 +78,26 @@ func Product_GetOneBarcode(ctx *fasthttp.RequestCtx) {
 func Product_GetManyByName(ctx *fasthttp.RequestCtx) {
 	log.Println("Product GetManyByName: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
 	name, _ := ctx.UserValue("name").(string)
+	count, _ := strconv.Atoi(ctx.UserValue("count").(string))
+	page, _ := strconv.Atoi(ctx.UserValue("page").(string))
+
+	if count > 50 {
+		count = 50
+	} else if count < 1 {
+		count = 1
+	}
+	if page > 50 {
+		page = 50
+	} else if page < 0 {
+		page = 0
+	}
+
+	offset := count * page
 
 	pExt := models.ProductExtendedArr{}
 	pShr := models.ProductShrinkedArr{}
 	shrinked := false
-	code, message := products.GetManyByName(name, &pExt, &pShr, &shrinked)
+	code, message := products.GetManyByName(name, &pExt, &pShr, &shrinked, count, offset)
 
 	var pJSON []byte
 	if shrinked == false {
