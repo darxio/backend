@@ -42,13 +42,14 @@ func main() {
 	// Data
 	r.GET("/groups", api.Groups_All)
 	r.GET("/groups/about/:name_or_id", api.Groups_About)
+	// r.GET("/groups/search/:group_id/:count/:page", api.Groups_Ingredients)
+	r.GET("/groups/search_ing/:name_or_id/:query/:count/:page", api.Groups_Ingredients_Search)
 	r.GET("/groups/ingredients/:group_id/:count/:page", api.Groups_Ingredients)
 	r.GET("/groups/search/:name_or_id/", api.Groups_Search)
 
 	// Ingredients
 	// r.GET("/ingredients", api.Ingredients_All)
 	r.GET("/ingredients/name/:name_or_id/", api.Ingredients_About)
-	r.GET("/ingredients/search/:name_or_id/", api.Ingredients_Search)
 	r.GET("/ingredients/search/:name_or_id/:count/:page", api.Ingredients_Search_Paginated)
 	r.GET("/ingredients/groups/:name_or_id/", api.Ingredients_GroupAll)
 	r.GET("/ingredients/top/:count/:page", api.Ingredients_Top)

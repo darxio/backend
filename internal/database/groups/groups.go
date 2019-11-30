@@ -61,6 +61,34 @@ func About(groupName string, groupID int32, group *models.Group) (code int, mess
 	return 200, "Successful."
 }
 
+func Search_Ing(groupID int, query string, count int, offset int, ingredients *models.IngredientArr) (code int, message string) {
+	rows, err := database.Query(`
+		SELECT i.id, i.name, i.danger, i.description, i.wiki_link, coalesce(ig.groups, '{}')
+			FROM ingredients AS i 
+			JOIN ing_groups AS ig ON i.id = ig.id
+			WHERE i.id IN (
+				SELECT id FROM ing_groups WHERE  ($1 = ANY (groups))
+			) AND i.name LIKE '%' || $2 || '%' 
+				ORDER BY i.frequency DESC, i.danger DESC LIMIT $3 OFFSET $4
+				`, strconv.Itoa(groupID), query, count, offset)
+
+	if err == pgx.ErrNoRows {
+		return 404, "Group not found."
+	} else if err != nil {
+		return 500, err.Error()
+	}
+
+	for rows.Next() {
+		curIng := models.Ingredient{}
+		rows.Scan(
+			&curIng.ID, &curIng.Name, &curIng.Danger,
+			&curIng.Description, &curIng.WikiLink, pq.Array(&curIng.Groups))
+		*ingredients = append(*ingredients, &curIng)
+	}
+
+	return 200, "Successful."
+}
+
 func Ingredients(groupID int, count int, offset int, ingredients *models.IngredientArr) (code int, message string) {
 	rows, err := database.Query(`
 		SELECT i.id, i.name, i.danger, i.description, i.wiki_link, coalesce(ig.groups, '{}')
