@@ -63,15 +63,22 @@ func About(groupName string, groupID int32, group *models.Group) (code int, mess
 
 func Search_Ing(groupID int, query string, count int, offset int, ingredients *models.IngredientArr) (code int, message string) {
 	rows, err := database.Query(`
-		SELECT i.id, i.name, i.danger, i.description, i.wiki_link, coalesce(ig.groups, '{}')
-			FROM ingredients AS i 
-			JOIN ing_groups AS ig ON i.id = ig.id
-			WHERE i.id IN (
-				SELECT id FROM ing_groups WHERE  ($1 = ANY (groups))
-			) AND i.name LIKE '%' || $2 || '%' 
-				ORDER BY i.frequency DESC, i.danger DESC LIMIT $3 OFFSET $4
-				`, strconv.Itoa(groupID), query, count, offset)
+		SELECT
+			i.id,
+			i.name,
+			i.danger,
+			i.description,
+			i.wiki_link,
+			coalesce(ig.groups, '{}') AS groups
+		FROM ingredients AS i
+		JOIN ing_groups AS ig ON i.id = ig.id
+		WHERE i.id IN (
+			SELECT id FROM ing_groups WHERE  ($1 = ANY (groups))
+		) AND i.name LIKE '%' || $2 || '%'
+			ORDER BY i.frequency DESC, i.danger DESC LIMIT $3 OFFSET $4
+	`, strconv.Itoa(groupID), query, count, offset)
 
+	println(groupID)
 	if err == pgx.ErrNoRows {
 		return 404, "Group not found."
 	} else if err != nil {
@@ -92,13 +99,13 @@ func Search_Ing(groupID int, query string, count int, offset int, ingredients *m
 func Ingredients(groupID int, count int, offset int, ingredients *models.IngredientArr) (code int, message string) {
 	rows, err := database.Query(`
 		SELECT i.id, i.name, i.danger, i.description, i.wiki_link, coalesce(ig.groups, '{}')
-			FROM ingredients AS i 
+			FROM ingredients AS i
 			JOIN ing_groups AS ig ON i.id = ig.id
 			WHERE i.id IN (
 				SELECT id FROM ing_groups WHERE  ($1 = ANY (groups))
 			)
 				ORDER BY i.frequency DESC, i.danger DESC LIMIT $2 OFFSET $3
-				`, strconv.Itoa(groupID), count, offset)
+	`, strconv.Itoa(groupID), count, offset)
 
 	if err == pgx.ErrNoRows {
 		return 404, "Group not found."
@@ -119,8 +126,8 @@ func Ingredients(groupID int, count int, offset int, ingredients *models.Ingredi
 
 func Search(groupsName string, groups *models.GroupArr) (code int, message string) {
 	rows, err := database.Query(`
-		SELECT id, name, about 
-			FROM groups WHERE name LIKE '%' || $1 || '%' 
+		SELECT id, name, about
+			FROM groups WHERE name LIKE '%' || $1 || '%'
 				ORDER BY id
 				`, groupsName)
 

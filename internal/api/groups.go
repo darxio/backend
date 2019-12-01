@@ -112,8 +112,9 @@ func Groups_Ingredients(ctx *fasthttp.RequestCtx) {
 
 func Groups_Ingredients_Search(ctx *fasthttp.RequestCtx) {
 	log.Println("Groups All: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
-	// groupID, _ := strconv.Atoi(ctx.UserValue("group_id").(string))
-	groupID, _ := ctx.UserValue("group_id").(int)
+	groupID, _ := strconv.Atoi(ctx.UserValue("group_id").(string))
+	// groupID, _ := ctx.UserValue("group_id").(int)
+	println(groupID)
 	query := ctx.UserValue("query").(string)
 	count, _ := strconv.Atoi(ctx.UserValue("count").(string))
 	page, _ := strconv.Atoi(ctx.UserValue("page").(string))
