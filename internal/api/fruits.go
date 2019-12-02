@@ -3,6 +3,7 @@ package api
 import (
 	"backend/internal/models"
 	"bytes"
+	"fmt"
 	"io"
 	"log"
 	"mime/multipart"
@@ -19,12 +20,17 @@ func sendErr(ctx *fasthttp.RequestCtx, err error) {
 }
 
 func Find_Fruit(ctx *fasthttp.RequestCtx) {
+	log.Println("Find Fruit: " + string(ctx.Method()) + (" ") + string(ctx.Path()))
 	fileHeader, err := ctx.FormFile("file")
 	if err != nil {
 		sendErr(ctx, err)
 	}
 
 	res := sendToPythonServer(fileHeader)
+	if res == nil {
+		ctx.SetStatusCode(fasthttp.StatusBadRequest)
+		return
+	}
 
 	ctx.SetBody(res.Body())
 	ctx.SetStatusCode(fasthttp.StatusOK)
@@ -32,6 +38,11 @@ func Find_Fruit(ctx *fasthttp.RequestCtx) {
 }
 
 func sendToPythonServer(fileHeader *multipart.FileHeader) *fasthttp.Response {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println("Recovered in sendToPythonServer", r)
+		}
+	}()
 	req := fasthttp.AcquireRequest()
 	req.SetRequestURI("http://rasseki.org:7000/predict")
 	// req.SetRequestURI("http://localhost:7000/predict")
@@ -42,7 +53,6 @@ func sendToPythonServer(fileHeader *multipart.FileHeader) *fasthttp.Response {
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
 
-	// defer recover() {}
 	part, err := writer.CreateFormFile("file", fileHeader.Filename)
 	if err != nil {
 		log.Fatal(err)
