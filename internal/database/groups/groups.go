@@ -126,7 +126,7 @@ func Ingredients(groupID int, count int, offset int, ingredients *models.Ingredi
 
 func Search(groupsName string, groups *models.GroupArr) (code int, message string) {
 	rows, err := database.Query(`
-		SELECT id, name, about
+		SELECT id, name, about, image_link
 			FROM groups WHERE name LIKE '%' || $1 || '%'
 				ORDER BY id
 				`, groupsName)
@@ -139,7 +139,7 @@ func Search(groupsName string, groups *models.GroupArr) (code int, message strin
 
 	for rows.Next() {
 		curGroup := models.Group{}
-		rows.Scan(&curGroup.ID, &curGroup.Name, &curGroup.About)
+		rows.Scan(&curGroup.ID, &curGroup.Name, &curGroup.About, &curGroup.ImageLink)
 		*groups = append(*groups, &curGroup)
 	}
 
