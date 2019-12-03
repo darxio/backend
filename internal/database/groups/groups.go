@@ -140,7 +140,7 @@ func Search(groupsName string, groups *models.GroupArr) (code int, message strin
 	for rows.Next() {
 		curGroup := models.Group{}
 		rows.Scan(&curGroup.ID, &curGroup.Name, &curGroup.About, &curGroup.ImageLink)
-		curGroup.ImageLink += hostURL
+		curGroup.ImageLink = hostURL + curGroup.ImageLink
 		*groups = append(*groups, &curGroup)
 	}
 
