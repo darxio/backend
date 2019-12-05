@@ -5,6 +5,7 @@ import (
 	"backend/internal/models"
 	"log"
 	"strconv"
+	"strings"
 
 	"github.com/jackc/pgx"
 )
@@ -13,6 +14,14 @@ var database *pgx.ConnPool
 
 func init() {
 	database = connection.Connect()
+}
+
+func returnLastCategory(category string) string {
+	if category == "" || category == "NULL" {
+		return category
+	}
+	categorySlice := strings.Split(category, "/")
+	return categorySlice[len(categorySlice)-1]
 }
 
 /*
@@ -68,6 +77,7 @@ func GetOneBarcode(barcode int64, productExt *models.ProductExtended,
 		&productExt.BestBefore, &productExt.Nutrition,
 		&productExt.Manufacturer, &productExt.Image)
 
+	productExt.CategoryURL = returnLastCategory(productExt.CategoryURL)
 	productExt.Image = "http://www.goodsmatrix.ru/BigImages/" + strconv.FormatUint(productExt.Barcode, 10) + ".jpg"
 
 	if err == pgx.ErrNoRows {
@@ -120,6 +130,7 @@ func GetManyByName(name string, productExt *models.ProductExtendedArr,
 				&curProd.CategoryURL, &curProd.Mass,
 				&curProd.BestBefore, &curProd.Nutrition,
 				&curProd.Manufacturer, &curProd.Image)
+			curProd.CategoryURL = returnLastCategory(curProd.CategoryURL)
 			curProd.Image = "http://www.goodsmatrix.ru/BigImages/" + strconv.FormatUint(curProd.Barcode, 10) + ".jpg"
 			*productExt = append(*productExt, &curProd)
 		}
