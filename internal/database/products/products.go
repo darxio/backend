@@ -120,7 +120,7 @@ func GetManyByName(name string, productExt *models.ProductExtendedArr,
 		COALESCE(manufacturer, 'NULL'),
 		COALESCE(image, 'NULL')
 		FROM products_extended
-		WHERE lower(name) LIKE '%'||$1||'%' AND lower(category_url) LIKE '%Товары/Продукты питания%'
+		WHERE lower(name) LIKE '%'||$1||'%' AND lower(category_url) LIKE '%товары/продукты питания%'
 		ORDER BY length(description)
 		LIMIT $2 OFFSET $3
 		`, name, count, offset)
