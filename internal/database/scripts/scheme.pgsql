@@ -1,4 +1,6 @@
 CREATE EXTENSION IF NOT EXISTS CITEXT;
+CREATE EXTENSION pg_trgm;
+
 DROP TABLE users CASCADE;
 DROP TABLE sessions CASCADE;
 DROP TABLE groups CASCADE;
@@ -103,3 +105,6 @@ CREATE TABLE product_ingredients (
 
   CONSTRAINT productingredients_pkey PRIMARY KEY (product_barcode, ingredient_id)
 );
+
+create index on products_extended using gin (lower(name) gin_trgm_ops, lower(category_url) gin_trgm_ops);
+create index on ingredients using gin (lower(name) gin_trgm_ops);

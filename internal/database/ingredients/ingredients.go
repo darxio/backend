@@ -75,7 +75,6 @@ func About(ingredientName string, ingredientID int32, ingredient *models.Ingredi
 	} else if err != nil {
 		return 500, err.Error()
 	}
-
 	return 200, "Successful."
 }
 

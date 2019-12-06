@@ -71,3 +71,24 @@ type ProductToAdd struct {
 	Barcode uint64 `json:"barcode"`
 	Name    string `json:"name"`
 }
+
+// easyjson:json
+type DetectedFruit struct {
+	Name     string  `json:"name"`
+	Accuracy float32 `json:"accuracy"`
+}
+
+// easyjson:json
+type Fruit struct {
+	ID              int      `json:"id"`
+	Name            string   `json:"name"`
+	Accuracy        float32  `json:"accuracy"`
+	NameRu          string   `json:"name_ru"`
+	Image           string   `json:"image"`
+	Description     string   `json:"description"`
+	Groups          []int64  `json:"groups"`
+	NutritionLabels []string `json:"nutrition_labels"`
+	Nutrition       []string `json:"nutrition"`
+	VitaminsLabels  []string `json:"vitamins_labels"`
+	Vitamins        []string `json:"vitamins"`
+}
