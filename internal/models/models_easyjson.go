@@ -1003,3 +1003,372 @@ func (v *Group) UnmarshalJSON(data []byte) error {
 func (v *Group) UnmarshalEasyJSON(l *jlexer.Lexer) {
 	easyjsonD2b7633eDecodeBackendInternalModels10(l, v)
 }
+func easyjsonD2b7633eDecodeBackendInternalModels11(in *jlexer.Lexer, out *Fruit) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeString()
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "id":
+			out.ID = int(in.Int())
+		case "name":
+			out.Name = string(in.String())
+		case "accuracy":
+			out.Accuracy = float32(in.Float32())
+		case "name_ru":
+			out.NameRu = string(in.String())
+		case "image":
+			out.Image = string(in.String())
+		case "description":
+			out.Description = string(in.String())
+		case "groups":
+			if in.IsNull() {
+				in.Skip()
+				out.Groups = nil
+			} else {
+				in.Delim('[')
+				if out.Groups == nil {
+					if !in.IsDelim(']') {
+						out.Groups = make([]int64, 0, 8)
+					} else {
+						out.Groups = []int64{}
+					}
+				} else {
+					out.Groups = (out.Groups)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v16 int64
+					v16 = int64(in.Int64())
+					out.Groups = append(out.Groups, v16)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		case "nutrition_labels":
+			if in.IsNull() {
+				in.Skip()
+				out.NutritionLabels = nil
+			} else {
+				in.Delim('[')
+				if out.NutritionLabels == nil {
+					if !in.IsDelim(']') {
+						out.NutritionLabels = make([]string, 0, 4)
+					} else {
+						out.NutritionLabels = []string{}
+					}
+				} else {
+					out.NutritionLabels = (out.NutritionLabels)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v17 string
+					v17 = string(in.String())
+					out.NutritionLabels = append(out.NutritionLabels, v17)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		case "nutrition":
+			if in.IsNull() {
+				in.Skip()
+				out.Nutrition = nil
+			} else {
+				in.Delim('[')
+				if out.Nutrition == nil {
+					if !in.IsDelim(']') {
+						out.Nutrition = make([]string, 0, 4)
+					} else {
+						out.Nutrition = []string{}
+					}
+				} else {
+					out.Nutrition = (out.Nutrition)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v18 string
+					v18 = string(in.String())
+					out.Nutrition = append(out.Nutrition, v18)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		case "vitamins_labels":
+			if in.IsNull() {
+				in.Skip()
+				out.VitaminsLabels = nil
+			} else {
+				in.Delim('[')
+				if out.VitaminsLabels == nil {
+					if !in.IsDelim(']') {
+						out.VitaminsLabels = make([]string, 0, 4)
+					} else {
+						out.VitaminsLabels = []string{}
+					}
+				} else {
+					out.VitaminsLabels = (out.VitaminsLabels)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v19 string
+					v19 = string(in.String())
+					out.VitaminsLabels = append(out.VitaminsLabels, v19)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		case "vitamins":
+			if in.IsNull() {
+				in.Skip()
+				out.Vitamins = nil
+			} else {
+				in.Delim('[')
+				if out.Vitamins == nil {
+					if !in.IsDelim(']') {
+						out.Vitamins = make([]string, 0, 4)
+					} else {
+						out.Vitamins = []string{}
+					}
+				} else {
+					out.Vitamins = (out.Vitamins)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v20 string
+					v20 = string(in.String())
+					out.Vitamins = append(out.Vitamins, v20)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjsonD2b7633eEncodeBackendInternalModels11(out *jwriter.Writer, in Fruit) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	{
+		const prefix string = ",\"id\":"
+		out.RawString(prefix[1:])
+		out.Int(int(in.ID))
+	}
+	{
+		const prefix string = ",\"name\":"
+		out.RawString(prefix)
+		out.String(string(in.Name))
+	}
+	{
+		const prefix string = ",\"accuracy\":"
+		out.RawString(prefix)
+		out.Float32(float32(in.Accuracy))
+	}
+	{
+		const prefix string = ",\"name_ru\":"
+		out.RawString(prefix)
+		out.String(string(in.NameRu))
+	}
+	{
+		const prefix string = ",\"image\":"
+		out.RawString(prefix)
+		out.String(string(in.Image))
+	}
+	{
+		const prefix string = ",\"description\":"
+		out.RawString(prefix)
+		out.String(string(in.Description))
+	}
+	{
+		const prefix string = ",\"groups\":"
+		out.RawString(prefix)
+		if in.Groups == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+			out.RawString("null")
+		} else {
+			out.RawByte('[')
+			for v21, v22 := range in.Groups {
+				if v21 > 0 {
+					out.RawByte(',')
+				}
+				out.Int64(int64(v22))
+			}
+			out.RawByte(']')
+		}
+	}
+	{
+		const prefix string = ",\"nutrition_labels\":"
+		out.RawString(prefix)
+		if in.NutritionLabels == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+			out.RawString("null")
+		} else {
+			out.RawByte('[')
+			for v23, v24 := range in.NutritionLabels {
+				if v23 > 0 {
+					out.RawByte(',')
+				}
+				out.String(string(v24))
+			}
+			out.RawByte(']')
+		}
+	}
+	{
+		const prefix string = ",\"nutrition\":"
+		out.RawString(prefix)
+		if in.Nutrition == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+			out.RawString("null")
+		} else {
+			out.RawByte('[')
+			for v25, v26 := range in.Nutrition {
+				if v25 > 0 {
+					out.RawByte(',')
+				}
+				out.String(string(v26))
+			}
+			out.RawByte(']')
+		}
+	}
+	{
+		const prefix string = ",\"vitamins_labels\":"
+		out.RawString(prefix)
+		if in.VitaminsLabels == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+			out.RawString("null")
+		} else {
+			out.RawByte('[')
+			for v27, v28 := range in.VitaminsLabels {
+				if v27 > 0 {
+					out.RawByte(',')
+				}
+				out.String(string(v28))
+			}
+			out.RawByte(']')
+		}
+	}
+	{
+		const prefix string = ",\"vitamins\":"
+		out.RawString(prefix)
+		if in.Vitamins == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+			out.RawString("null")
+		} else {
+			out.RawByte('[')
+			for v29, v30 := range in.Vitamins {
+				if v29 > 0 {
+					out.RawByte(',')
+				}
+				out.String(string(v30))
+			}
+			out.RawByte(']')
+		}
+	}
+	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v Fruit) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjsonD2b7633eEncodeBackendInternalModels11(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v Fruit) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjsonD2b7633eEncodeBackendInternalModels11(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *Fruit) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjsonD2b7633eDecodeBackendInternalModels11(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *Fruit) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjsonD2b7633eDecodeBackendInternalModels11(l, v)
+}
+func easyjsonD2b7633eDecodeBackendInternalModels12(in *jlexer.Lexer, out *DetectedFruit) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeString()
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "name":
+			out.Name = string(in.String())
+		case "accuracy":
+			out.Accuracy = float32(in.Float32())
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjsonD2b7633eEncodeBackendInternalModels12(out *jwriter.Writer, in DetectedFruit) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	{
+		const prefix string = ",\"name\":"
+		out.RawString(prefix[1:])
+		out.String(string(in.Name))
+	}
+	{
+		const prefix string = ",\"accuracy\":"
+		out.RawString(prefix)
+		out.Float32(float32(in.Accuracy))
+	}
+	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v DetectedFruit) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjsonD2b7633eEncodeBackendInternalModels12(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v DetectedFruit) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjsonD2b7633eEncodeBackendInternalModels12(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *DetectedFruit) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjsonD2b7633eDecodeBackendInternalModels12(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *DetectedFruit) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjsonD2b7633eDecodeBackendInternalModels12(l, v)
+}
