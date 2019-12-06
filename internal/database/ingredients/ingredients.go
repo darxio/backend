@@ -89,7 +89,7 @@ func Search(ingredientName string, count int, offset int, ingredients *models.In
 		COALESCE(ig.groups, '{}') AS groups
 		FROM ingredients AS i
 			LEFT JOIN ing_groups AS ig ON i.id = ig.id
-			WHERE i.name LIKE '%' || $1 || '%' 
+			WHERE lower(i.name) LIKE '%' || $1 || '%' 
 				ORDER BY i.frequency DESC, i.danger DESC 
 				LIMIT $2 OFFSET $3
 		`, ingredientName, count, offset)
