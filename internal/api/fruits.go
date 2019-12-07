@@ -14,6 +14,8 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
+var hostURL = "https://static.rasseki.ru"
+
 func fruitonizeProductize(f *models.Fruit, shortFruit *models.DetectedFruit) *models.ProductExtended {
 	p := models.ProductExtended{}
 	p.Barcode = uint64(f.ID)
@@ -24,7 +26,7 @@ func fruitonizeProductize(f *models.Fruit, shortFruit *models.DetectedFruit) *mo
 	p.BestBefore = "NULL"
 	p.Manufacturer = "NULL"
 	p.Ingredients = nil
-	p.Image = f.Image
+	p.Image = hostURL + f.Image
 
 	var err error
 	nutr := make([]*[]string, 2)
