@@ -1,15 +1,51 @@
 package api
 
 import (
+	"backend/internal/database/fruits"
 	"backend/internal/models"
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"mime/multipart"
+	"strconv"
 
 	"github.com/valyala/fasthttp"
 )
+
+func fruitonizeProductize(f *models.Fruit, shortFruit *models.DetectedFruit) *models.ProductExtended {
+	p := models.ProductExtended{}
+	p.Barcode = uint64(f.ID)
+	p.Name = f.NameRu
+	p.Description = f.Description
+	p.CategoryURL = "Fruit"
+	p.Mass = strconv.FormatFloat(float64(shortFruit.Accuracy), 'f', 4, 64)
+	p.BestBefore = "NULL"
+	p.Manufacturer = "NULL"
+	p.Ingredients = nil
+
+	var err error
+	nutr := make([]*[]string, 2)
+	nutr[0] = &f.NutritionLabels
+	nutr[1] = &f.Nutrition
+	n, err := json.Marshal(nutr)
+	if err != nil {
+		return nil
+	}
+	p.Nutrition = string(n)
+
+	vitamins := make([]*[]string, 2)
+	vitamins[0] = &f.VitaminsLabels
+	vitamins[1] = &f.Vitamins
+	v, err1 := json.Marshal(vitamins)
+	if err1 != nil {
+		return nil
+	}
+	p.Contents = string(v)
+
+	return &p
+}
 
 func sendErr(ctx *fasthttp.RequestCtx, err error) {
 	ctx.SetStatusCode(fasthttp.StatusInternalServerError)
@@ -32,9 +68,44 @@ func Find_Fruit(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	ctx.SetBody(res.Body())
-	ctx.SetStatusCode(fasthttp.StatusOK)
+	shortFruit := models.DetectedFruit{}
+
+	err = shortFruit.UnmarshalJSON(res.Body())
+	if err != nil {
+		sendErr(ctx, err)
+	}
 	fasthttp.ReleaseResponse(res)
+
+	fruit := models.Fruit{}
+	code, message := fruits.GetFruitsInfo(shortFruit.Name, &fruit)
+
+	switch code {
+	case fasthttp.StatusOK:
+		prod := fruitonizeProductize(&fruit, &shortFruit)
+		if prod == nil {
+			sendErr(ctx, err)
+		}
+		json, err := prod.MarshalJSON()
+		if err != nil {
+			sendErr(ctx, err)
+		}
+		ctx.SetBody(json)
+		ctx.SetStatusCode(fasthttp.StatusOK)
+	case fasthttp.StatusNotFound:
+		ctx.SetStatusCode(fasthttp.StatusNotFound)
+		m := &models.Msg{}
+		m.Message = message
+		mJSON, _ := m.MarshalJSON()
+		ctx.SetBody(mJSON)
+	case fasthttp.StatusInternalServerError:
+		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+		m := &models.Msg{}
+		m.Message = message
+		mJSON, _ := m.MarshalJSON()
+		ctx.SetBody(mJSON)
+	}
+	// ctx.SetBody(res.Body())
+	// ctx.SetStatusCode(fasthttp.StatusOK)
 }
 
 func sendToPythonServer(fileHeader *multipart.FileHeader) *fasthttp.Response {
