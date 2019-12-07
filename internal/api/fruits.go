@@ -24,6 +24,7 @@ func fruitonizeProductize(f *models.Fruit, shortFruit *models.DetectedFruit) *mo
 	p.BestBefore = "NULL"
 	p.Manufacturer = "NULL"
 	p.Ingredients = nil
+	p.Image = f.Image
 
 	var err error
 	nutr := make([]*[]string, 2)
