@@ -11,7 +11,7 @@ import (
 )
 
 var database *pgx.ConnPool
-var hostURL = "https://rasseki.ru/"
+var hostURL = "https://static.rasseki.ru/"
 
 func init() {
 	database = connection.Connect()

@@ -74,7 +74,7 @@ type ProductToAdd struct {
 
 // easyjson:json
 type DetectedFruit struct {
-	Name     string  `json:"name"`
+	Name     string  `json:"prediction"`
 	Accuracy float32 `json:"accuracy"`
 }
 

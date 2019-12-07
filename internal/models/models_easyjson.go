@@ -4,6 +4,7 @@ package models
 
 import (
 	json "encoding/json"
+
 	easyjson "github.com/mailru/easyjson"
 	jlexer "github.com/mailru/easyjson/jlexer"
 	jwriter "github.com/mailru/easyjson/jwriter"
@@ -1318,7 +1319,7 @@ func easyjsonD2b7633eDecodeBackendInternalModels12(in *jlexer.Lexer, out *Detect
 			continue
 		}
 		switch key {
-		case "name":
+		case "prediction":
 			out.Name = string(in.String())
 		case "accuracy":
 			out.Accuracy = float32(in.Float32())
@@ -1337,7 +1338,7 @@ func easyjsonD2b7633eEncodeBackendInternalModels12(out *jwriter.Writer, in Detec
 	first := true
 	_ = first
 	{
-		const prefix string = ",\"name\":"
+		const prefix string = ",\"prediction\":"
 		out.RawString(prefix[1:])
 		out.String(string(in.Name))
 	}
