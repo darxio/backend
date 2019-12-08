@@ -91,8 +91,8 @@ func GetOneBarcode(barcode int64, productExt *models.ProductExtended,
 			log.Println("database/products.go: 500, " + err.Error())
 			return 500, err.Error()
 		}
-
 		*shrinked = true
+		productShr.Shrinked = true
 		return 200, "Successful."
 
 	} else if err != nil {
@@ -144,6 +144,7 @@ func GetManyByName(name string, productExt *models.ProductExtendedArr,
 			for rows.Next() {
 				curProd := models.ProductShrinked{}
 				rows.Scan(&curProd.Barcode, &curProd.Name)
+				curProd.Shrinked = true
 				*productShr = append(*productShr, &curProd)
 			}
 		}
