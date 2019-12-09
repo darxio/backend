@@ -6,9 +6,10 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/lib/pq"
-
 	"backend/internal/database/connection"
+	"hash/fnv"
+
+	"github.com/lib/pq"
 
 	"github.com/eadium/contents-analyzer/brackets"
 	"github.com/jackc/pgx"
@@ -27,7 +28,7 @@ type argError struct {
 
 type Ingredient struct {
 	Name        string        `json:"name"`
-	ID          int           `json:"id"`
+	ID          int32         `json:"id"`
 	Danger      int           `json:"danger"`
 	Groups      []int64       `json:"groups"`
 	Ingredients *[]Ingredient `json:"ingredients"`
@@ -54,6 +55,12 @@ func init() {
 	if err3 != nil {
 		log.Fatal(err3)
 	}
+}
+
+func hash(s string) int32 {
+	h := fnv.New32a()
+	h.Write([]byte(s))
+	return int32(h.Sum32())
 }
 
 func (e *argError) Error() string {
@@ -142,8 +149,9 @@ func findClosingParen(text []string, openPos int) int {
 	return closePos
 }
 
-func getDangerLevel(ing string) (int, int, []int64, error) {
-	var danger, id int
+func getDangerLevel(ing string) (int, int32, []int64, error) {
+	var danger int
+	var id int32
 	var groups []int64
 	err := database.QueryRow(
 		`SELECT i.id, i.danger, coalesce(ing_groups.groups, '{}') FROM ingredients AS i 
@@ -154,14 +162,11 @@ func getDangerLevel(ing string) (int, int, []int64, error) {
 	// println(groups[0)
 	if err != nil {
 		if err == pgx.ErrNoRows {
-			return -1, 0, groups, nil
+			return -1, hash(ing), groups, nil
 		}
 		// println(ing)
 		log.Println("ERROR analyzer.go:160: getDangerLevel()", err.Error())
 		return -1, -1, groups, err
 	}
-	// if len(groups) == 0 {
-	// 	groups = "NULL"
-	// }
 	return danger, id, groups, nil
 }
