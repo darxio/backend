@@ -159,19 +159,18 @@ func getDangerLevel(ing string) (int, int32, []int64, error) {
 		WHERE i.name = $1 
 		ORDER BY frequency LIMIT 1;
 	`, ing).Scan(&id, &danger, pq.Array(&groups))
-	// println(groups[0)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return -1, 0, groups, nil
 		}
-		// println(ing)
+		println(ing)
 		log.Println("ERROR analyzer.go:160: getDangerLevel()", err.Error())
 		return -1, -1, groups, err
 	}
 	fmt.Printf("id:%d\n", id)
-	// if id == 0 {
-	// 	id = hash(ing)
-	// 	println(id)
-	// }
+	if id == 0 {
+		id = hash(ing)
+		println(id)
+	}
 	return danger, id, groups, nil
 }
