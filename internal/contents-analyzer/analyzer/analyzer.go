@@ -163,11 +163,9 @@ func getDangerLevel(ing string) (int, int32, []int64, error) {
 		if err == pgx.ErrNoRows {
 			return -1, 0, groups, nil
 		}
-		println(ing)
 		log.Println("ERROR analyzer.go:160: getDangerLevel()", err.Error())
 		return -1, -1, groups, err
 	}
-	fmt.Printf("id:%d\n", id)
 	if id == 0 {
 		id = hash(ing)
 	}
