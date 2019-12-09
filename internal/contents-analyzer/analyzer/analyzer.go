@@ -170,7 +170,6 @@ func getDangerLevel(ing string) (int, int32, []int64, error) {
 	fmt.Printf("id:%d\n", id)
 	if id == 0 {
 		id = hash(ing)
-		println(id)
 	}
 	return danger, id, groups, nil
 }
