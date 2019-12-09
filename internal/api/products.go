@@ -134,6 +134,10 @@ func Product_GetManyByName_Paginated(ctx *fasthttp.RequestCtx) {
 		page = 0
 	}
 
+	if len(name) < 3 {
+		name = " " + name + " "
+	}
+
 	offset := count * page
 
 	pExt := models.ProductExtendedArr{}
