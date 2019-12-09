@@ -135,7 +135,7 @@ func Product_GetManyByName_Paginated(ctx *fasthttp.RequestCtx) {
 	}
 
 	if len(name) < 3 {
-		name = name + "  "
+		name = name + "."
 	}
 	println(name)
 
