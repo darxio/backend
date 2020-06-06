@@ -1,4 +1,4 @@
-FROM ubuntu:19.04
+FROM ubuntu:20.04
 
 ENV PGSQLVER 11
 ENV DEBIAN_FRONTEND 'noninteractive'
