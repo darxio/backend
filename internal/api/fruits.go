@@ -118,8 +118,8 @@ func sendToPythonServer(fileHeader *multipart.FileHeader) *fasthttp.Response {
 		}
 	}()
 	req := fasthttp.AcquireRequest()
-	req.SetRequestURI("http://rasseki.org:7000/predict")
-	// req.SetRequestURI("http://localhost:7000/predict")
+	// req.SetRequestURI("http://rasseki.org:7000/predict")
+	req.SetRequestURI("http://localhost:7000/predict")
 	req.Header.Add("User-Agent", "food_backend")
 	// req.Header.Add("Content-Type", "multipart/form-data")
 	req.Header.SetMethod("POST")
