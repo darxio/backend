@@ -14,7 +14,7 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
-var hostURL = "https://static.rasseki.ru"
+var hostURL = "https://static.foodwise.rasseki.org"
 
 func fruitonizeProductize(f *models.Fruit, shortFruit *models.DetectedFruit) *models.ProductExtended {
 	p := models.ProductExtended{}

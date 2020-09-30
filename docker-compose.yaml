@@ -2,13 +2,8 @@ version: '3.7'
 services:
   backend:
     build: .
-    networks: 
-      - darx-net
+    network_mode: host
     ports:
       - "8888:8888"
     volumes:
       - ./logs:/opt/go/backend/logs
-
-networks:
-  darx-net:
-    driver: bridge
