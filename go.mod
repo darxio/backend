@@ -6,7 +6,7 @@ require (
 	github.com/buaazp/fasthttprouter v0.1.1
 	github.com/cockroachdb/apd v1.1.0 // indirect
 	github.com/corpix/uarand v0.1.1 // indirect
-	github.com/eadium/contents-analyzer v0.0.0-20191022110903-1764f59c8225
+	github.com/eadium/contents-analyzer v0.0.0-20191028102851-067c6989ee82
 	github.com/gofrs/uuid v3.2.0+incompatible // indirect
 	github.com/icrowley/fake v0.0.0-20180203215853-4178557ae428
 	github.com/jackc/fake v0.0.0-20150926172116-812a484cc733 // indirect
