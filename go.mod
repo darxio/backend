@@ -15,6 +15,6 @@ require (
 	github.com/mailru/easyjson v0.7.0
 	github.com/pkg/errors v0.8.1 // indirect
 	github.com/shopspring/decimal v0.0.0-20191009025716-f1972eb1d1f5 // indirect
-	github.com/valyala/fasthttp v1.5.0
-	golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550
+	github.com/valyala/fasthttp v1.34.0
+	golang.org/x/crypto v0.0.0-20220214200702-86341886e292
 )
