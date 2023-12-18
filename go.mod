@@ -16,5 +16,5 @@ require (
 	github.com/pkg/errors v0.8.1 // indirect
 	github.com/shopspring/decimal v0.0.0-20191009025716-f1972eb1d1f5 // indirect
 	github.com/valyala/fasthttp v1.34.0
-	golang.org/x/crypto v0.1.0
+	golang.org/x/crypto v0.17.0
 )
